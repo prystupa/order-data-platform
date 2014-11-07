@@ -13,6 +13,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class App {
+
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(App.class);
 
@@ -57,6 +58,8 @@ public class App {
                 chains.remove(childChainId);
             }
         }
+
+        client.shutdown();
     }
 }
 
