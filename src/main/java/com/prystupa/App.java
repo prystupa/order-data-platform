@@ -32,11 +32,10 @@ public class App {
             String id = order[0];
             String parentId = order[1];
 
-            String parentChainId = chainLookup.get(parentId);
+            String parentChainId = chainLookup.putIfAbsent(parentId, parentId);
             if (parentChainId == null) {
                 parentChainId = parentId;
                 chains.put(parentChainId, parentId);
-                chainLookup.put(parentId, parentChainId);
                 logger.info("Create new chain '{}' and added order '{}' to it", parentChainId, parentId);
             }
 
@@ -51,6 +50,9 @@ public class App {
                 for (String orderId : orders) {
                     chains.put(parentChainId, orderId);
                     chainLookup.put(orderId, parentChainId);
+
+                    chains.remove(childChainId);
+
                     logger.info("Merged order '{}' from chain '{}' to chain '{}'", orderId, childChainId, parentChainId);
                 }
 
