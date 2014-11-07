@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Scanner;
-import java.util.UUID;
 
 public class App {
 
@@ -35,24 +34,24 @@ public class App {
 
             String parentChainId = chainLookup.get(parentId);
             if (parentChainId == null) {
-                parentChainId = UUID.randomUUID().toString();
+                parentChainId = parentId;
                 chains.put(parentChainId, parentId);
                 chainLookup.put(parentId, parentChainId);
-                logger.info("Create new chain {} and added {} order to it", parentChainId, parentId);
+                logger.info("Create new chain '{}' and added order '{}' to it", parentChainId, parentId);
             }
 
             String childChainId = chainLookup.get(id);
             if (childChainId == null) {
                 chains.put(parentChainId, id);
                 chainLookup.put(id, parentChainId);
-                logger.info("Added child order {} to chain {}", id, parentChainId);
+                logger.info("Added child order '{}' to chain '{}'", id, parentChainId);
             } else if (!childChainId.equals(parentChainId)) {
                 // merge
                 Collection<String> orders = chains.get(childChainId);
                 for (String orderId : orders) {
                     chains.put(parentChainId, orderId);
                     chainLookup.put(orderId, parentChainId);
-                    logger.info("Merged order {} from chain {} to chain {}", orderId, childChainId, parentChainId);
+                    logger.info("Merged order '{}' from chain '{}' to chain '{}'", orderId, childChainId, parentChainId);
                 }
 
                 chains.remove(childChainId);
