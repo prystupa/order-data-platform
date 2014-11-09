@@ -5,6 +5,8 @@ import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.prystupa.core.test.HazelcastUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,7 +25,7 @@ public class EventChainListenerTest {
     public void setup() {
         Config config = new ClasspathXmlConfig("event-chain-listener.xml");
         server = Hazelcast.newHazelcastInstance(config);
-        client = HazelcastClient.newHazelcastClient();
+        client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor(server));
         ingester = new EventIngester(client);
     }
 
@@ -40,9 +42,12 @@ public class EventChainListenerTest {
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
         ingester.ingest(root);
+        waitIngester();
 
         // Act
         ingester.ingest(child);
+        waitIngester();
+
 
         // Assert
         Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
@@ -55,12 +60,20 @@ public class EventChainListenerTest {
         Event child = new Event("2", "1", "P1");
         Event root = new Event("1", "1", "P1");
         ingester.ingest(child);
+        waitIngester();
 
         // Act
         ingester.ingest(root);
 
         // Assert
         Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
-        Assert.assertEquals(Arrays.asList(root, child), actual);
+        Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child));
+    }
+
+    private void waitIngester() {
+        // simple trick to get a chance for all async processing to complete, mainly entry listeners on "chains" and "parents" maps
+        // seems to work - if it breaks need to think of more robust synchronization
+        client.getMultiMap("chains").size();
+        client.getMap("parents").size();
     }
 }

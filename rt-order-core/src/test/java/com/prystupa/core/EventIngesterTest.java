@@ -1,8 +1,11 @@
 package com.prystupa.core;
 
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.config.ClasspathXmlConfig;
+import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.prystupa.core.test.HazelcastUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,8 +22,9 @@ public class EventIngesterTest {
 
     @Before
     public void setup() {
-        server = Hazelcast.newHazelcastInstance();
-        client = HazelcastClient.newHazelcastClient();
+        Config config = new ClasspathXmlConfig("event-ingester.xml");
+        server = Hazelcast.newHazelcastInstance(config);
+        client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor(server));
         target = new EventIngester(client);
     }
 
