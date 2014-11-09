@@ -12,7 +12,7 @@ import java.util.Collection;
 
 public class EventIngester {
 
-    private final Logger logger = LoggerFactory.getLogger(App.class);
+    private final Logger logger = LoggerFactory.getLogger(EventIngester.class);
     private final IMap<EventID, String> parents;
     private final MultiMap<EventID, Event> chains;
 
