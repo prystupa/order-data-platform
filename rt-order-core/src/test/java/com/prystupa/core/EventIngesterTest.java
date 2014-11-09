@@ -6,12 +6,12 @@ import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.prystupa.core.test.HazelcastUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 public class EventIngesterTest {
@@ -46,6 +46,6 @@ public class EventIngesterTest {
 
         // Assert
         Collection<Event> actual = target.chain(new EventID("2", "P1"));
-        Assert.assertEquals(Arrays.asList(event), actual);
+        Assert.assertThat(actual, Matchers.containsInAnyOrder(event));
     }
 }

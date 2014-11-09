@@ -12,10 +12,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
 
-public class EventChainListenerTest {
+public class EventChainLinkingTest {
 
     HazelcastInstance server;
     HazelcastInstance client;
@@ -23,7 +22,7 @@ public class EventChainListenerTest {
 
     @Before
     public void setup() {
-        Config config = new ClasspathXmlConfig("event-chain-listener.xml");
+        Config config = new ClasspathXmlConfig("event-chain-linking.xml");
         server = Hazelcast.newHazelcastInstance(config);
         client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor(server));
         ingester = new EventIngester(client);
@@ -51,7 +50,7 @@ public class EventChainListenerTest {
 
         // Assert
         Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
-        Assert.assertEquals(Arrays.asList(root, child), actual);
+        Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child));
     }
 
     @Test
@@ -68,6 +67,24 @@ public class EventChainListenerTest {
         // Assert
         Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
         Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child));
+    }
+
+    @Test
+    public void ingestMissingLinkMergesChainsToRoot() {
+        Event grandChild = new Event("3", "2", "P1");
+        Event root = new Event("1", "1", "P1");
+        Event child = new Event("2", "1", "P1");
+        ingester.ingest(grandChild);
+        ingester.ingest(root);
+        waitIngester();
+
+        // Act
+        ingester.ingest(child);
+        waitIngester();
+
+        // Assert
+        Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
+        Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child, grandChild));
     }
 
     private void waitIngester() {
