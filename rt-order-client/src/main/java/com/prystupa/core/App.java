@@ -1,8 +1,7 @@
-package com.prystupa.client;
+package com.prystupa.core;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
-import com.prystupa.core.Event;
 
 import java.util.Scanner;
 

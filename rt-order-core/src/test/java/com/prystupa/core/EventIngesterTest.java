@@ -1,11 +1,12 @@
-package com.prystupa.client;
+package com.prystupa.core;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.prystupa.core.Event;
-import com.prystupa.core.EventID;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
