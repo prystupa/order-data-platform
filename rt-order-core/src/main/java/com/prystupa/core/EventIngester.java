@@ -30,9 +30,23 @@ public class EventIngester {
     public void clear() {
         chains.clear();
         parents.clear();
+
     }
 
     public Collection<Event> chain(EventID eventID) {
         return chains.get(eventID);
+    }
+
+    public String getParent(final EventID eventId) {
+        return parents.get(eventId);
+    }
+
+    public void move(EventID to, EventID from) {
+        final Collection<Event> events = chains.get(from);
+        for (Event event : events) {
+            chains.put(to, event);
+            chains.remove(from, event);
+            logger.info("moved event '{}' from chain '{}' to {}", event, from, to);
+        }
     }
 }

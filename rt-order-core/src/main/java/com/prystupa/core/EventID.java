@@ -15,6 +15,10 @@ public class EventID implements PartitionAware<String>, Serializable {
         this.primeId = primeId;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public String getPartitionKey() {
         return primeId;
@@ -28,7 +32,6 @@ public class EventID implements PartitionAware<String>, Serializable {
         EventID eventID = (EventID) o;
 
         return id.equals(eventID.id);
-
     }
 
     @Override

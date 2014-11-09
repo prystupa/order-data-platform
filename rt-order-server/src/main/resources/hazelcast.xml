@@ -2,4 +2,15 @@
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+    <network>
+        <join>
+            <multicast enabled="true"/>
+        </join>
+    </network>
+    <multimap name="chains">
+        <value-collection-type>LIST</value-collection-type>
+        <entry-listeners>
+            <entry-listener local="true" include-value="false">com.prystupa.core.EventChainListener</entry-listener>
+        </entry-listeners>
+    </multimap>
 </hazelcast>
