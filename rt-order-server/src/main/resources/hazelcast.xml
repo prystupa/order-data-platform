@@ -8,7 +8,7 @@
         </join>
     </network>
     <multimap name="chains">
-        <value-collection-type>LIST</value-collection-type>
+        <value-collection-type>SET</value-collection-type>
         <entry-listeners>
             <entry-listener local="true" include-value="false">com.prystupa.core.EventChainListener</entry-listener>
         </entry-listeners>
