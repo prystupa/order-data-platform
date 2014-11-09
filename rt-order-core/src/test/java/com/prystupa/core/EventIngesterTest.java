@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class EventIngesterTest {
 
-    static HazelcastInstance server;
+    HazelcastInstance server;
     HazelcastInstance client;
     EventIngester target;
 

@@ -14,6 +14,8 @@ public class EventChainListener implements EntryListener<EventID, Event>, Hazelc
         if (keyParent != null && !key.getId().equals(keyParent)) {
             eventIngester.move(new EventID(keyParent, key.getPartitionKey()), key);
         }
+
+
     }
 
     @Override
