@@ -8,6 +8,8 @@ import com.prystupa.core.EventID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
 public class EventIngester {
 
     private final Logger logger = LoggerFactory.getLogger(App.class);
@@ -30,5 +32,9 @@ public class EventIngester {
     public void clear() {
         chains.clear();
         parents.clear();
+    }
+
+    public Collection<Event> chain(EventID eventID) {
+        return chains.get(eventID);
     }
 }
