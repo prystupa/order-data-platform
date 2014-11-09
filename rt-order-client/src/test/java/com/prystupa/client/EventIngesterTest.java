@@ -16,18 +16,9 @@ public class EventIngesterTest {
     HazelcastInstance client;
     EventIngester target;
 
-    @BeforeClass
-    public static void setupClass() {
-        server = Hazelcast.newHazelcastInstance();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        server.shutdown();
-    }
-
     @Before
     public void setup() {
+        server = Hazelcast.newHazelcastInstance();
         client = HazelcastClient.newHazelcastClient();
         target = new EventIngester(client);
     }
@@ -36,6 +27,7 @@ public class EventIngesterTest {
     public void tearDown() {
         target.clear();
         client.shutdown();
+        server.shutdown();
     }
 
     @Test
