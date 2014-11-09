@@ -1,4 +1,4 @@
-package com.prystupa;
+package com.prystupa.core;
 
 import com.hazelcast.core.PartitionAware;
 

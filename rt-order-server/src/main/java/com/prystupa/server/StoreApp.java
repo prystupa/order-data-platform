@@ -1,4 +1,4 @@
-package com.prystupa;
+package com.prystupa.server;
 
 import com.hazelcast.core.Hazelcast;
 
