@@ -9,13 +9,11 @@ public class EventChainListener implements EntryListener<EventID, Event>, Hazelc
     @Override
     public void entryAdded(EntryEvent<EventID, Event> event) {
         EventIngester eventIngester = new EventIngester(hazelcastInstance);
-        final EventID key = event.getKey();
-        final String keyParent = eventIngester.getParent(key);
-        if (keyParent != null && !key.getId().equals(keyParent)) {
-            eventIngester.move(new EventID(keyParent, key.getPartitionKey()), key);
+        final EventID eventId = event.getKey();
+        final String keyParent = eventIngester.getParent(eventId);
+        if (keyParent != null) {
+            eventIngester.move(new EventID(keyParent, eventId.getPartitionKey()), eventId);
         }
-
-
     }
 
     @Override

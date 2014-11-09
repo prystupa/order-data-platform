@@ -42,11 +42,13 @@ public class EventIngester {
     }
 
     public void move(EventID to, EventID from) {
-        final Collection<Event> events = chains.get(from);
-        for (Event event : events) {
-            chains.put(to, event);
-            chains.remove(from, event);
-            logger.info("moved event '{}' from chain '{}' to {}", event, from, to);
+        if (!to.equals(from)) {
+            final Collection<Event> events = chains.get(from);
+            for (Event event : events) {
+                chains.put(to, event);
+                chains.remove(from, event);
+                logger.info("moved event '{}' from chain '{}' to {}", event, from, to);
+            }
         }
     }
 }
