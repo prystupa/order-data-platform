@@ -36,7 +36,7 @@ public class EventIngesterTest {
     }
 
     @Test
-    public void ingestSingleEventAddsToChain() {
+    public void ingestSingleEventAddsToParentChain() {
 
         // Arrange
         Event event = new Event("2", "1", "P1");
@@ -45,7 +45,7 @@ public class EventIngesterTest {
         target.ingest(event);
 
         // Assert
-        Collection<Event> actual = target.chain(new EventID("2", "P1"));
+        Collection<Event> actual = target.chain(new EventID("1", "P1"));
         Assert.assertThat(actual, Matchers.containsInAnyOrder(event));
     }
 }

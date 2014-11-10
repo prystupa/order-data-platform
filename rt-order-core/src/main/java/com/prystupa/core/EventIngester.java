@@ -22,9 +22,10 @@ public class EventIngester {
     public void ingest(final Event event) {
 
         final EventID eventID = new EventID(event.getId(), event.getPrimeId());
+        final EventID parentEventID = new EventID(event.getParentId(), event.getPrimeId());
         parents.put(eventID, event.getParentId());
-        chains.put(eventID, event);
-        logger.info("saved event '{}' to chain '{}'", event, eventID);
+        chains.put(parentEventID, event);
+        logger.info("saved event '{}' to chain '{}'", event, parentEventID);
     }
 
     public void clear() {

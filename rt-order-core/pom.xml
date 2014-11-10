@@ -36,8 +36,13 @@
         <!-- Hamcrest -->
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <scope>test</scope>
+            <artifactId>hamcrest-core</artifactId>
+            <!--<scope>test</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <!--<scope>test</scope>-->
         </dependency>
 
         <!-- Google Guava -->

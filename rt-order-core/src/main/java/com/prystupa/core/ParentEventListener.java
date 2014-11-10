@@ -4,13 +4,15 @@ import com.hazelcast.core.*;
 
 public class ParentEventListener implements EntryListener<EventID, String>, HazelcastInstanceAware {
     private HazelcastInstance hazelcastInstance;
-
+    private static EventIngester eventIngester;
 
     @Override
     public void entryAdded(EntryEvent<EventID, String> event) {
+        if (eventIngester == null) {
+            eventIngester = new EventIngester(hazelcastInstance);
+        }
         EventID eventID = event.getKey();
         EventID parentEventId = new EventID(event.getValue(), eventID.getPartitionKey());
-        EventIngester eventIngester = new EventIngester(hazelcastInstance);
         eventIngester.move(parentEventId, eventID);
     }
 

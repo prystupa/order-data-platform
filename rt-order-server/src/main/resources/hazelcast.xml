@@ -7,6 +7,7 @@
             <multicast enabled="true"/>
         </join>
     </network>
+
     <multimap name="chains">
         <value-collection-type>SET</value-collection-type>
         <entry-listeners>
