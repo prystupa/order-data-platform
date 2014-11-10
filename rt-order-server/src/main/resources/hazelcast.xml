@@ -17,7 +17,7 @@
 
     <map name="parents">
         <entry-listeners>
-            <entry-listener local="true" include-value="true">com.prystupa.core.ParentEventListener</entry-listener>
+            <entry-listener local="true" include-value="false">com.prystupa.core.ParentEventListener</entry-listener>
         </entry-listeners>
     </map>
 </hazelcast>

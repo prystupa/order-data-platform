@@ -12,8 +12,7 @@ public class ParentEventListener implements EntryListener<EventID, String>, Haze
             eventIngester = new EventIngester(hazelcastInstance);
         }
         EventID eventID = event.getKey();
-        EventID parentEventId = new EventID(event.getValue(), eventID.getPartitionKey());
-        eventIngester.move(parentEventId, eventID);
+        eventIngester.moveToRoot(eventID);
     }
 
     @Override
