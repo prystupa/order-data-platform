@@ -52,4 +52,8 @@ public class EventIngester {
             }
         }
     }
+
+    public int chainCount() {
+        return chains.keySet().size();
+    }
 }

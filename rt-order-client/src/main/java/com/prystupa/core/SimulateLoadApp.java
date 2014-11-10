@@ -29,6 +29,16 @@ public class SimulateLoadApp {
             }
         }
 
+        System.out.println("[Enter] to print stats or 'quit'");
+        Scanner scanner = new Scanner(System.in);
+        String line;
+        while (!(line = scanner.nextLine()).equals("quit")) {
+            if (line.equals("quit")) {
+                break;
+            }
+            System.out.println("Total chains: " + ingester.chainCount());
+        }
+
         client.shutdown();
     }
 
@@ -36,6 +46,7 @@ public class SimulateLoadApp {
         List<Event> list = new ArrayList<>(count);
 
         int remaining = count;
+        int chains = 0;
         while (remaining > 0) {
             int chain = Math.min(randInt(1, 20), remaining);
             remaining -= chain;
@@ -49,8 +60,11 @@ public class SimulateLoadApp {
                 list.add(new Event(child, parent, primeId));
                 parent = child;
             }
+
+            chains++;
         }
 
+        logger.info("Created {} different chains", chains);
         return list;
     }
 
