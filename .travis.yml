@@ -6,3 +6,5 @@ deploy:
   file: target/rt-order-server-1.0-SNAPSHOT-bin.tar.gz
   on:
     repo: prystupa/rt-order-reporting
+    tags: true
+    all_branches: true
