@@ -59,6 +59,26 @@
                 </executions>
             </plugin>
 
+            <!-- Assembly -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/tar.gz.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>single</goal> <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Docker plugin -->
             <plugin>
                 <groupId>com.spotify</groupId>
@@ -67,7 +87,9 @@
                 <configuration>
                     <imageName>prystupa/hz-server</imageName>
                     <baseImage>java</baseImage>
-                    <entryPoint>["java", "-cp", "/opt/hz-server/dependency/*:/opt/hz-server/rt-order-server-1.0-SNAPSHOT.jar", "com.prystupa.server.StoreApp"]
+                    <entryPoint>["java", "-cp",
+                        "/opt/hz-server/dependency/*:/opt/hz-server/rt-order-server-1.0-SNAPSHOT.jar",
+                        "com.prystupa.server.StoreApp"]
                     </entryPoint>
                     <resources>
                         <resource>
