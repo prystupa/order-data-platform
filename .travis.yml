@@ -5,8 +5,8 @@ deploy:
     secure: IOiptKZ3V298Qf2v0NTi82hRDbRPVf9jL/Y49aYsO9oTg+aJUn4srG5XLXOgdQ1BYdqYk1yusEDPkcfLntdbq8YxojloLf8LOgf9nS6rBbaxWvPgRo2DS1TkMh+IUXtGlOTi7iLvP482nckZDxO88bjnTp7ejVNNJ129bLOSrpo=
   file:
     - rt-order-server/target/rt-order-server-1.0-SNAPSHOT-bin.tar.gz
-    - rt-order-server/target/hz-server.Dockerfile
-    - rt-order-server/target/deploy-hz-server.sh
+    - rt-order-server/target/rt-order-server-1.0-SNAPSHOT-bin/hz-server.Dockerfile
+    - rt-order-server/target/rt-order-server-1.0-SNAPSHOT-bin/deploy-hz-server.sh
   skip_cleanup: true
   on:
     repo: prystupa/rt-order-reporting
