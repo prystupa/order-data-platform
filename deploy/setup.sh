@@ -14,10 +14,8 @@ echo "at=start-setup time=`date`"
 curl http://169.254.169.254/latest/user-data -o user-data
 export $(cat user-data)
 
-# We are using ADF-CONFIG(1) to download the app's environment variables
-# from our DynamoDB config table. ADF-CONFIG(1) relies on IAM roles to
-# access DynamoDB.
-#./adf-config -l -a $APP > env
+# We are passing all of user-dat to the app as well
+cat user-data > app-env
 
 # Download the code via RELEASE_URL - which is supplied by user-data. We
 # expect the tar ball to include a single directory in which the app's
@@ -43,6 +41,6 @@ docker build -t "$BUILD_USER/$BUILD_VERSION" "build/$BUILD_VERSION" 2>&1
 # to get our environment variables into the conatiner. We can't specify
 # our environment variables in the Dockerfile since the file is in version
 # control. (No secrets in the source!) So, we take the result of
-# ADF-CONFIG(1), massage it into the -e flags that the docker run command
+# user-data, massage it into the -e flags that the docker run command
 # expects.
-docker run $(cat env | awk '{print "-e " $1}' | tr -s '\n' ' ') -d "$BUILD_USER/$BUILD_VERSION" 2>&1
+docker run $(cat app-env | awk '{print "-e " $1}' | tr -s '\n' ' ') -d "$BUILD_USER/$BUILD_VERSION" 2>&1
