@@ -16,4 +16,9 @@
             <directory>${project.build.directory}/dependency</directory>
         </fileSet>
     </fileSets>
+    <files>
+        <file>
+            <source>deploy/Dockerfile</source>
+        </file>
+    </files>
 </assembly>

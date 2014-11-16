@@ -76,40 +76,7 @@
                             </descriptors>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>make-dockerfile</id>
-                        <phase>package</phase> <!-- append to the packaging phase. -->
-                        <goals>
-                            <goal>single</goal> <!-- goals == mojos -->
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/dockerfile.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
                 </executions>
-            </plugin>
-
-            <!-- Docker plugin -->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.0.29</version>
-                <configuration>
-                    <imageName>prystupa/hz-server</imageName>
-                    <baseImage>java</baseImage>
-                    <entryPoint>["java", "-cp",
-                        "/opt/hz-server/dependency/*:/opt/hz-server/rt-order-server-1.0-SNAPSHOT.jar",
-                        "com.prystupa.server.StoreApp"]
-                    </entryPoint>
-                    <resources>
-                        <resource>
-                            <targetPath>/opt/hz-server</targetPath>
-                            <directory>${project.build.directory}</directory>
-                        </resource>
-                    </resources>
-                </configuration>
             </plugin>
         </plugins>
     </build>
