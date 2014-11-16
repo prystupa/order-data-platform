@@ -2,6 +2,6 @@ FROM java
 
 MAINTAINER "Eugene Prystupa"
 
-ADD ./target /app
+ADD . /app
 
-CMD ["java", "-cp", "/app/dependency/*:/app/rt-order-server-1.0-SNAPSHOT.jar", "com.prystupa.server.StoreApp"]
+CMD ["java", "-cp", "/app/*", "com.prystupa.server.StoreApp"]

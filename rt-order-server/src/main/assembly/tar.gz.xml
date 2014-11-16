@@ -11,14 +11,17 @@
             <includes>
                 <include>*.jar</include>
             </includes>
+            <outputDirectory>${project.name}</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}/dependency</directory>
+            <outputDirectory>${project.name}</outputDirectory>
         </fileSet>
     </fileSets>
     <files>
         <file>
             <source>deploy/Dockerfile</source>
+            <outputDirectory>${project.name}</outputDirectory>
         </file>
     </files>
 </assembly>
