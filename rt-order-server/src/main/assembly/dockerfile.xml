@@ -3,17 +3,16 @@
     <id>bin</id>
     <baseDirectory>/</baseDirectory>
     <formats>
-        <format>tar.gz</format>
+        <format>dir</format>
     </formats>
-    <fileSets>
-        <fileSet>
-            <directory>${project.build.directory}</directory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.build.directory}/dependency</directory>
-        </fileSet>
-    </fileSets>
+    <files>
+        <file>
+            <source>deploy/Dockerfile</source>
+            <destName>hz-server.Dockerfile</destName>
+        </file>
+        <file>
+            <source>deploy/hz-server.sh</source>
+            <destName>deploy-hz-server.sh</destName>
+        </file>
+    </files>
 </assembly>

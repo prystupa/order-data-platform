@@ -63,18 +63,30 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4.1</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/tar.gz.xml</descriptor>
-                    </descriptors>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <id>make-java-jars-tar.gz</id>
                         <phase>package</phase> <!-- append to the packaging phase. -->
                         <goals>
                             <goal>single</goal> <!-- goals == mojos -->
                         </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/tar.gz.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>make-dockerfile</id>
+                        <phase>package</phase> <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>single</goal> <!-- goals == mojos -->
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/dockerfile.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
