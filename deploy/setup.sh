@@ -43,4 +43,4 @@ docker build -t "$BUILD_USER/$BUILD_VERSION" "build/$BUILD_VERSION" 2>&1
 # control. (No secrets in the source!) So, we take the result of
 # user-data, massage it into the -e flags that the docker run command
 # expects.
-docker run $(cat app-env | awk '{print "-e " $1}' | tr -s '\n' ' ') -d "$BUILD_USER/$BUILD_VERSION" 2>&1
+docker run $DOCKER_APP_OPTIONS $(cat app-env | awk '{print "-e " $1}' | tr -s '\n' ' ') -d "$BUILD_USER/$BUILD_VERSION" 2>&1
