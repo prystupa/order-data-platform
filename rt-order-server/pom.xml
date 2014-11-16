@@ -25,7 +25,11 @@
         <!-- Hazelcast -->
         <dependency>
             <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast-client</artifactId>
+            <artifactId>hazelcast</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast-cloud</artifactId>
         </dependency>
 
         <!-- Logback -->
@@ -66,9 +70,9 @@
                 <executions>
                     <execution>
                         <id>make-java-jars-tar.gz</id>
-                        <phase>package</phase> <!-- append to the packaging phase. -->
+                        <phase>package</phase>
                         <goals>
-                            <goal>single</goal> <!-- goals == mojos -->
+                            <goal>single</goal>
                         </goals>
                         <configuration>
                             <descriptors>

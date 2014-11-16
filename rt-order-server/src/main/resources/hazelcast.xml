@@ -4,7 +4,13 @@
 
     <network>
         <join>
-            <multicast enabled="true"/>
+            <multicast enabled="false"/>
+            <aws enabled="true">
+                <access-key>${aws.access-key}</access-key>
+                <secret-key>${aws.secret-key}</secret-key>
+                <tag-key>role</tag-key>
+                <tag-value>hz-server</tag-value>
+            </aws>
         </join>
     </network>
 
