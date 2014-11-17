@@ -12,7 +12,9 @@ echo "at=start-setup time=`date`"
 # valid bash. Specifically we are expecting that it contain variable declerations
 # for $RELEASE_URL and $APP
 curl http://169.254.169.254/latest/user-data -o user-data
-export $(cat user-data)
+while read -r line; do
+    export "$line"
+done < user-data
 
 # We are passing all of user-dat to the app as well
 cat user-data > app-env
