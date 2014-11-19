@@ -23,6 +23,8 @@ rm -rf app
 mkdir app
 curl -L $RELEASE_URL | tar xvz -C app
 
-cd app/
+BUILD_VERSION=$(ls app)
+cd app/"$BUILD_VERSION"
 
+chmod +x ./setup.sh
 ./setup.sh

@@ -1,0 +1,11 @@
+[Unit]
+Description=Setup Release Daemon
+After=syslog.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/sh /home/ec2-user/setup-release.sh
+User=ec2-user
+
+[Install]
+WantedBy=multi-user.target
