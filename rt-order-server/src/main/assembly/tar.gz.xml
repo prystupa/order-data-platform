@@ -20,7 +20,7 @@
     </fileSets>
     <files>
         <file>
-            <source>deploy/Dockerfile</source>
+            <source>deploy/setup.sh</source>
             <outputDirectory>${project.name}</outputDirectory>
         </file>
     </files>
