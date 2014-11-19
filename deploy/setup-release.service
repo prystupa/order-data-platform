@@ -1,6 +1,7 @@
 [Unit]
 Description=Setup Release Daemon
 After=syslog.target
+After=network.target
 
 [Service]
 ExecStart=/home/ec2-user/setup-release.sh
