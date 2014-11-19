@@ -3,9 +3,9 @@ Description=Setup Release Daemon
 After=syslog.target
 
 [Service]
-Type=forking
-ExecStart=/usr/bin/sh /home/ec2-user/setup-release.sh > /home/ec2-user/log/app.log 2>&1
-User=ec2-user
+ExecStart=/home/ec2-user/setup-release.sh
+WorkingDirectory=/home/ec2-user
+User=root
 
 [Install]
 WantedBy=multi-user.target
