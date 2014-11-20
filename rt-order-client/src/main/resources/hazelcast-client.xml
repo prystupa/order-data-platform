@@ -6,7 +6,8 @@
         <aws enabled="true">
             <access-key>${aws.access-key}</access-key>
             <secret-key>${aws.secret-key}</secret-key>
-            <security-group-name>hz-servers</security-group-name>
+            <tag-key>role</tag-key>
+            <tag-value>hz-server</tag-value>
         </aws>
     </network>
 </hazelcast-client>

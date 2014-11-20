@@ -40,16 +40,6 @@ public class SimulateLoadApp {
             }
         }
 
-        System.out.println("[Enter] to print stats or 'quit'");
-        Scanner scanner = new Scanner(System.in);
-        String line;
-        while (!(line = scanner.nextLine()).equals("quit")) {
-            if (line.equals("quit")) {
-                break;
-            }
-            System.out.println("Total chains: " + ingester.chainCount());
-        }
-
         client.shutdown();
     }
 
