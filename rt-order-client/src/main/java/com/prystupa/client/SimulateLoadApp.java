@@ -1,10 +1,12 @@
-package com.prystupa.core;
+package com.prystupa.client;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientAwsConfig;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.XmlClientConfigBuilder;
 import com.hazelcast.core.HazelcastInstance;
+import com.prystupa.core.Event;
+import com.prystupa.core.EventIngester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
