@@ -1,19 +1,30 @@
 package com.prystupa.client;
 
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientAwsConfig;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.client.config.XmlClientConfigBuilder;
 import com.hazelcast.core.HazelcastInstance;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventID;
 import com.prystupa.core.EventIngester;
 
+import java.io.IOException;
 import java.util.Scanner;
 
-public class App {
+public class DashboardApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         final String DEFAULT_PRIME_ID = "PrimeID";
-        final HazelcastInstance client = HazelcastClient.newHazelcastClient();
+        final ClientConfig config = new XmlClientConfigBuilder("hazelcast-client.xml").build();
+        final String accessKey = System.getProperty("aws.access-key");
+        if (accessKey != null) {
+            final ClientAwsConfig awsConfig = config.getNetworkConfig().getAwsConfig();
+            awsConfig.setAccessKey(accessKey);
+            awsConfig.setSecretKey(System.getProperty("aws.secret-key"));
+        }
+        final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         final EventIngester ingester = new EventIngester(client);
 
         System.out.println("Enter order pairs, empty string to exit:");
