@@ -35,6 +35,10 @@ public class DashboardApp {
                 ingester.clear();
                 continue;
             }
+            if (line.equals("count")) {
+                System.out.println(ingester.chainCount());
+                continue;
+            }
             if (line.startsWith("chain")) {
                 String[] parts = line.split("\\s");
                 String chainId = parts[1];
