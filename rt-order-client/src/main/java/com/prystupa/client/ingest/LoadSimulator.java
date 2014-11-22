@@ -40,10 +40,16 @@ public class LoadSimulator extends UntypedActor {
         final List<Event> events = generateEvents(total);
         Collections.shuffle(events);
 
+        int fired = 0;
         for (Event event : events) {
             final ActorRef eventIngester = getContext().actorOf(Props.create(Ingester.class, ingester));
             getContext().watch(eventIngester);
-            eventIngester.tell(event, self());
+            eventIngester.tell(event, getSelf());
+
+            fired++;
+            if(fired % 1000 == 0) {
+                logger.info("Fired {} events", fired);
+            }
         }
     }
 
