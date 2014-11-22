@@ -18,7 +18,7 @@ public class SimulateLoadApp {
     private static Logger logger = LoggerFactory.getLogger(SimulateLoadApp.class);
     private static Random rand = new Random();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         final ClientConfig config = new XmlClientConfigBuilder("hazelcast-client.xml").build();
         final String accessKey = System.getProperty("aws.access-key");
