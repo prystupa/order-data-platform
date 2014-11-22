@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 
 public class EventChainLinkingTest {
 
@@ -36,7 +37,7 @@ public class EventChainLinkingTest {
     }
 
     @Test
-    public void ingestChildAfterRootMovesChildToRootChain() {
+    public void ingestChildAfterRootMovesChildToRootChain() throws InterruptedException, ExecutionException {
         // Arrange
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
@@ -54,7 +55,7 @@ public class EventChainLinkingTest {
     }
 
     @Test
-    public void ingestRootAfterChildMovesChildToRootChain() {
+    public void ingestRootAfterChildMovesChildToRootChain() throws InterruptedException, ExecutionException {
         // Arrange
         Event child = new Event("2", "1", "P1");
         Event root = new Event("1", "1", "P1");
@@ -63,6 +64,7 @@ public class EventChainLinkingTest {
 
         // Act
         ingester.ingest(root);
+        waitIngester();
 
         // Assert
         Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
@@ -70,7 +72,7 @@ public class EventChainLinkingTest {
     }
 
     @Test
-    public void ingestMissingLinkMergesChainsToRoot() {
+    public void ingestMissingLinkMergesChainsToRoot() throws InterruptedException, ExecutionException {
         Event grandChild = new Event("3", "2", "P1");
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");

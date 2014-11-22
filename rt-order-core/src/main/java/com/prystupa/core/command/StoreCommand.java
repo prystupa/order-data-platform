@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 
 public class StoreCommand implements Runnable, Serializable, HazelcastInstanceAware {
+    private transient static final Logger logger = LoggerFactory.getLogger(StoreCommand.class);
     private final Event event;
-    private transient final Logger logger = LoggerFactory.getLogger(StoreCommand.class);
     private transient IMap<EventID, String> parents;
     private transient MultiMap<EventID, Event> chains;
 

@@ -11,10 +11,11 @@ import com.prystupa.core.EventIngester;
 
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 public class DashboardApp {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
 
         final String DEFAULT_PRIME_ID = "PrimeID";
         final ClientConfig config = new XmlClientConfigBuilder("hazelcast-client.xml").build();

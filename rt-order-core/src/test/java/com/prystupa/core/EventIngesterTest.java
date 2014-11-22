@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 
 public class EventIngesterTest {
 
@@ -36,7 +37,7 @@ public class EventIngesterTest {
     }
 
     @Test
-    public void ingestSingleEventAddsToParentChain() {
+    public void ingestSingleEventAddsToParentChain() throws InterruptedException, ExecutionException {
 
         // Arrange
         Event event = new Event("2", "1", "P1");
