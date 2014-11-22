@@ -21,6 +21,7 @@ public class LoadSimulator extends UntypedActor {
     private Random rand = new Random();
     private final int total = 100000;
     private int processed = 0;
+    private HazelcastInstance client;
 
     @Override
     public void preStart() throws Exception {
@@ -33,7 +34,7 @@ public class LoadSimulator extends UntypedActor {
             awsConfig.setAccessKey(accessKey);
             awsConfig.setSecretKey(System.getProperty("aws.secret-key"));
         }
-        final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
+        client = HazelcastClient.newHazelcastClient(config);
         final EventIngester ingester = new EventIngester(client);
 
         final List<Event> events = generateEvents(total);
@@ -44,8 +45,6 @@ public class LoadSimulator extends UntypedActor {
             getContext().watch(eventIngester);
             eventIngester.tell(event, self());
         }
-
-        client.shutdown();
     }
 
     @Override
@@ -58,6 +57,7 @@ public class LoadSimulator extends UntypedActor {
             }
 
             if (processed == total) {
+                client.shutdown();
                 getContext().system().shutdown();
             }
         } else {

@@ -16,7 +16,7 @@ public class Ingester extends UntypedActor {
         if (message instanceof Event) {
             final Event event = (Event) message;
             ingester.ingest(event);
-            getContext().stop(self());
+            getContext().stop(getSelf());
         } else {
             unhandled(message);
         }
