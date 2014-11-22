@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class EventIngester {
 
@@ -22,7 +21,7 @@ public class EventIngester {
         executorService = client.getExecutorService("default");
     }
 
-    public void ingest(final Event event) throws InterruptedException, ExecutionException {
+    public CompletableFuture<Object> ingest(final Event event) throws InterruptedException {
 
         final CompletableFuture<Object> result = new CompletableFuture<>();
         executorService.submitToKeyOwner(new StoreCommand(event), event.getPrimeId(), new ExecutionCallback<Object>() {
@@ -39,7 +38,7 @@ public class EventIngester {
             }
         });
 
-        result.get();
+        return result;
     }
 
     public void clear() {

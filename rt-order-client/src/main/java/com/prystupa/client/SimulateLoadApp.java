@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SimulateLoadApp {
 
@@ -31,18 +33,26 @@ public class SimulateLoadApp {
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         final EventIngester ingester = new EventIngester(client);
 
-        final List<Event> events = generateEvents(100000);
+        int total = 100000;
+        final List<Event> events = generateEvents(total);
         Collections.shuffle(events);
 
-        int batch = 0;
+        final AtomicInteger batch = new AtomicInteger(0);
         for (Event event : events) {
-            ingester.ingest(event);
-            batch++;
-            if (batch % 1000 == 0) {
-                logger.info("Ingested {} events", batch);
-            }
+            final CompletableFuture<Object> future = ingester.ingest(event);
+            future.thenRun(() -> {
+                int ingested = batch.addAndGet(1);
+                if (ingested % 1000 == 0) {
+                    logger.info("Ingested {} events", ingested);
+                }
+            });
         }
 
+        for (; ; ) {
+            if (batch.get() >= total) {
+                break;
+            }
+        }
         client.shutdown();
     }
 

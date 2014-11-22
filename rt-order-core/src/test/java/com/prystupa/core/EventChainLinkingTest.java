@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class EventChainLinkingTest {
@@ -41,12 +42,10 @@ public class EventChainLinkingTest {
         // Arrange
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
-        ingester.ingest(root);
-        waitIngester();
+        waitIngester(ingester.ingest(root));
 
         // Act
-        ingester.ingest(child);
-        waitIngester();
+        waitIngester(ingester.ingest(child));
 
 
         // Assert
@@ -59,12 +58,10 @@ public class EventChainLinkingTest {
         // Arrange
         Event child = new Event("2", "1", "P1");
         Event root = new Event("1", "1", "P1");
-        ingester.ingest(child);
-        waitIngester();
+        waitIngester(ingester.ingest(child));
 
         // Act
-        ingester.ingest(root);
-        waitIngester();
+        waitIngester(ingester.ingest(root));
 
         // Assert
         Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
@@ -76,20 +73,20 @@ public class EventChainLinkingTest {
         Event grandChild = new Event("3", "2", "P1");
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
-        ingester.ingest(grandChild);
-        ingester.ingest(root);
-        waitIngester();
+        waitIngester(ingester.ingest(grandChild));
+        waitIngester(ingester.ingest(root));
 
         // Act
-        ingester.ingest(child);
-        waitIngester();
+        waitIngester(ingester.ingest(child));
 
         // Assert
         Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
         Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child, grandChild));
     }
 
-    private void waitIngester() {
+    private void waitIngester(final CompletableFuture<Object> future) throws ExecutionException, InterruptedException {
+        future.get();
+
         // simple trick to get a chance for all async processing to complete, mainly entry listeners on "chains" and "parents" maps
         // seems to work - if it breaks need to think of more robust synchronization
         client.getMultiMap("chains").size();
