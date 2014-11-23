@@ -7,6 +7,7 @@ import com.hazelcast.client.config.XmlClientConfigBuilder;
 import com.hazelcast.core.HazelcastInstance;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventIngester;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,15 @@ public class SimulateLoadApp {
     private static Logger logger = LoggerFactory.getLogger(SimulateLoadApp.class);
     private static Random rand = new Random();
 
-    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, ParseException {
+
+        final Options options = new Options();
+        options.addOption("n", true, "number of order events to emulate");
+
+        CommandLineParser parser = new GnuParser();
+        CommandLine cmd = parser.parse(options, args);
+
+        int total = Integer.parseInt(cmd.getOptionValue("n", "1"));
 
         final ClientConfig config = new XmlClientConfigBuilder("hazelcast-client.xml").build();
         final String accessKey = System.getProperty("aws.access-key");
@@ -33,7 +42,6 @@ public class SimulateLoadApp {
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         final EventIngester ingester = new EventIngester(client);
 
-        int total = 100000;
         final List<Event> events = generateEvents(total);
         Collections.shuffle(events);
 
@@ -42,8 +50,8 @@ public class SimulateLoadApp {
             final CompletableFuture<Object> future = ingester.ingest(event);
             future.thenRun(() -> {
                 int ingested = batch.addAndGet(1);
-                if (ingested % 1000 == 0) {
-                    logger.info("Ingested {} events", ingested);
+                if (ingested % 10000 == 0 || ingested == total) {
+                    logger.info("Ingested {} event(s)", ingested);
                 }
             });
         }
@@ -78,7 +86,7 @@ public class SimulateLoadApp {
             chains++;
         }
 
-        logger.info("Created {} different chains", chains);
+        logger.info("Created {} chain(s)", chains);
         return list;
     }
 
