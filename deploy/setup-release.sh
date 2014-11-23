@@ -16,6 +16,14 @@ while read -r line; do
     export "$line"
 done < user-data
 
+# Setup aws-monitoring if requested
+if [ ${ENABLE_MONITORING:-false} == "true" ]; then
+    echo "Setting up cron to run monitoring job to report every minute"
+    (crontab -l 2>/dev/null; echo "*/1 * * * * /home/ec2-user/aws-mon-linux/aws-mon.sh --all-items --disk-path=/ --from-cron") | crontab -
+else
+    echo "Monitoring is not enabled"
+fi
+
 # Download the code via RELEASE_URL - which is supplied by user-data. We
 # expect the tar ball to include a single directory in which the app's
 # code and 'setup.sh' are located.
