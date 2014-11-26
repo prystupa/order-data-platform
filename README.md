@@ -35,3 +35,6 @@ We leverage Hazelcast event listeners to perform realtime chain linking as event
 
 ## Enrichment
 TODO
+
+## Outstanding questions
+- Recovery - in the unfortunate event that two nodes are going down (primary node and its backup) at the same time, how would I even detect there is data loss? How do I know which keys are gone and need to be reprocessed?
