@@ -3,7 +3,7 @@ rt-order-reporting
 
 [![Build Status](https://travis-ci.org/prystupa/rt-order-reporting.png)](https://travis-ci.org/prystupa/rt-order-reporting)
 
-The 'rt-order-reporting' POC aims to quickly prototype a distributed realtime solution to large volume (hundreds of millions of events daily) order reporting problem. Outstanding questions [here] (#outstanding-questions)
+The 'rt-order-reporting' POC aims to quickly prototype a distributed realtime solution to large volume (hundreds of millions of events daily) order reporting problem. Outstanding questions [here] (#outstanding-questions).
 
 Order reporting include the following key steps:
   
@@ -38,3 +38,4 @@ TODO
 
 ## Outstanding questions
 - Recovery - in the unfortunate event that two nodes are going down (primary node and its backup) at the same time, how would I even detect there is data loss? How do I know which keys are gone and need to be reprocessed?
+- Ingestion speed and lack of back pressure - if clients feed events at a high rate, the server starts dropping events (with Event queue is overloaded message). A test case we used is feeding 1mln events to a single Hazelcast node deplyed on m2.large EC2 instance
