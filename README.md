@@ -15,7 +15,7 @@ Order reporting include the following key steps:
 
 The idea is to be able to scale inifinitly by processing events on a large distributed grid, in realtime. We also want to levarage data locality - we can partition related orders such that all orders from the same chain are stored and processed on the same node - to minimize network chatter.
 
-Hazelcast is used in this POC as in-memory distributed grid.
+Hazelcast is used in this POC as in-memory distributed grid provider.
 
 Currently implemented ideas are documeted below.
 
