@@ -12,5 +12,5 @@
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="com.prystupa.core.EventIngester" level="WARN"/>
+    <logger name="com.prystupa.core.EventStore" level="WARN"/>
 </configuration>

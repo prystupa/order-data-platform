@@ -13,21 +13,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class EventIngesterTest {
+public class EventStoreTest {
 
     HazelcastInstance server;
     HazelcastInstance client;
-    EventIngester target;
+    EventStore target;
 
     @Before
     public void setup() {
         Config config = new ClasspathXmlConfig("event-ingester.xml");
         server = Hazelcast.newHazelcastInstance(config);
         client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor(server));
-        target = new EventIngester(client);
+        target = new EventStore(client);
     }
 
     @After
@@ -44,8 +43,7 @@ public class EventIngesterTest {
         Event event = new Event("2", "1", "P1");
 
         // Act
-        CompletableFuture<Object> future = target.ingest(event);
-        future.get();
+        target.save(event);
 
         // Assert
         Collection<Event> actual = target.chain(new EventID("1", "P1"));

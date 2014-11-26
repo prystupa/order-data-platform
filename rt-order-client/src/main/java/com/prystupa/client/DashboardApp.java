@@ -5,7 +5,7 @@ import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventID;
-import com.prystupa.core.EventIngester;
+import com.prystupa.core.EventStore;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -18,25 +18,25 @@ public class DashboardApp {
         final String DEFAULT_PRIME_ID = "PrimeID";
         final ClientConfig config = ClientUtils.buildConfig();
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
-        final EventIngester ingester = new EventIngester(client);
+        final EventStore store = new EventStore(client);
 
         System.out.println("Enter order pairs, empty string to exit:");
         Scanner scanner = new Scanner(System.in);
         String line;
         while (!(line = scanner.nextLine()).equals("")) {
             if (line.equals("clear")) {
-                ingester.clear();
+                store.clear();
                 continue;
             }
             if (line.equals("count")) {
-                System.out.println(ingester.chainCount());
+                System.out.println(store.chainCount());
                 continue;
             }
             if (line.startsWith("chain")) {
                 String[] parts = line.split("\\s");
                 String chainId = parts[1];
                 String primeId = parts.length > 2 ? parts[2] : DEFAULT_PRIME_ID;
-                System.out.println(ingester.chain(new EventID(chainId, primeId)));
+                System.out.println(store.chain(new EventID(chainId, primeId)));
                 continue;
             }
 
@@ -46,7 +46,7 @@ public class DashboardApp {
             String primeId = order.length > 2 ? order[2] : DEFAULT_PRIME_ID;
             Event event = new Event(id, parentId, primeId);
 
-            ingester.ingest(event);
+            store.save(event);
         }
 
         client.shutdown();

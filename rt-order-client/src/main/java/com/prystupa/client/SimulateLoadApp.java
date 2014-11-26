@@ -2,9 +2,11 @@ package com.prystupa.client;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.core.ExecutionCallback;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.prystupa.core.Event;
-import com.prystupa.core.EventIngester;
+import com.prystupa.core.command.StoreCommand;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +34,14 @@ public class SimulateLoadApp {
 
         final ClientConfig config = ClientUtils.buildConfig();
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
-        final EventIngester ingester = new EventIngester(client);
+        final IExecutorService executorService = client.getExecutorService("default");
 
         final List<Event> events = generateEvents(total);
         Collections.shuffle(events);
 
         final AtomicInteger batch = new AtomicInteger(0);
         for (Event event : events) {
-            final CompletableFuture<Object> future = ingester.ingest(event);
+            final CompletableFuture<Object> future = ingest(executorService, event);
             future.thenRun(() -> {
                 int ingested = batch.addAndGet(1);
                 if (ingested % 10000 == 0 || ingested == total) {
@@ -87,5 +89,25 @@ public class SimulateLoadApp {
         // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
         return rand.nextInt((max - min) + 1) + min;
+    }
+
+    public static CompletableFuture<Object> ingest(final IExecutorService executorService, final Event event) throws InterruptedException {
+
+        final CompletableFuture<Object> result = new CompletableFuture<>();
+        executorService.submitToKeyOwner(new StoreCommand(event), event.getPrimeId(), new ExecutionCallback<Object>() {
+            @Override
+            public void onResponse(Object response) {
+                logger.debug("Submitted event {}", event);
+                result.complete(response);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                logger.error("Failed submitting event", t);
+                result.completeExceptionally(t);
+            }
+        });
+
+        return result;
     }
 }

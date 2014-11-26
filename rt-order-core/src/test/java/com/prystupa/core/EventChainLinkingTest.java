@@ -13,26 +13,25 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class EventChainLinkingTest {
 
     HazelcastInstance server;
     HazelcastInstance client;
-    EventIngester ingester;
+    EventStore store;
 
     @Before
     public void setup() {
         Config config = new ClasspathXmlConfig("event-chain-linking.xml");
         server = Hazelcast.newHazelcastInstance(config);
         client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor(server));
-        ingester = new EventIngester(client);
+        store = new EventStore(client);
     }
 
     @After
     public void tearDown() {
-        ingester.clear();
+        store.clear();
         client.shutdown();
         server.shutdown();
     }
@@ -42,14 +41,16 @@ public class EventChainLinkingTest {
         // Arrange
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
-        waitIngester(ingester.ingest(root));
+        store.save(root);
+        waitIngester();
 
         // Act
-        waitIngester(ingester.ingest(child));
+        store.save(child);
+        waitIngester();
 
 
         // Assert
-        Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
+        Collection<Event> actual = store.chain(new EventID("1", "P1"));
         Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child));
     }
 
@@ -58,13 +59,15 @@ public class EventChainLinkingTest {
         // Arrange
         Event child = new Event("2", "1", "P1");
         Event root = new Event("1", "1", "P1");
-        waitIngester(ingester.ingest(child));
+        store.save(child);
+        waitIngester();
 
         // Act
-        waitIngester(ingester.ingest(root));
+        store.save(root);
+        waitIngester();
 
         // Assert
-        Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
+        Collection<Event> actual = store.chain(new EventID("1", "P1"));
         Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child));
     }
 
@@ -73,19 +76,21 @@ public class EventChainLinkingTest {
         Event grandChild = new Event("3", "2", "P1");
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
-        waitIngester(ingester.ingest(grandChild));
-        waitIngester(ingester.ingest(root));
+        store.save(grandChild);
+        waitIngester();
+        store.save(root);
+        waitIngester();
 
         // Act
-        waitIngester(ingester.ingest(child));
+        store.save(child);
+        waitIngester();
 
         // Assert
-        Collection<Event> actual = ingester.chain(new EventID("1", "P1"));
+        Collection<Event> actual = store.chain(new EventID("1", "P1"));
         Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child, grandChild));
     }
 
-    private void waitIngester(final CompletableFuture<Object> future) throws ExecutionException, InterruptedException {
-        future.get();
+    private void waitIngester() throws ExecutionException, InterruptedException {
 
         // simple trick to get a chance for all async processing to complete, mainly entry listeners on "chains" and "parents" maps
         // seems to work - if it breaks need to think of more robust synchronization
