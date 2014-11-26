@@ -23,15 +23,15 @@ Currently implemented ideas are documeted below.
 An order event is modeled as a simple tuple (ID, parent ID, partition key). Partition key is an attribute of an oder that guarantees orders from the same chain map to the same partition. Product ID (ticker) is an example of such a key in real life.
 
 ## Ingestion
-We use a partition aware command executin (StoreCommand) to siubmit simulated order event to the grid. The command recieves an event tuple and executes on appropriate node. Upon execution it updates two maps:
+We use a partition aware command execution (StoreCommand) to siubmit simulated order event to the grid. The command recieves an event tuple and executes on appropriate node. Upon execution it updates two maps:
 - parents - ID -> parent ID association
 - chains - multimap of (root ID -> ID)
 When new event tuple arrives, Store command pessimistically assumes its parent ID is also its chain root ID
 
 ## Linking
 We leverage Hazelcast event listeners to perform realtime chain linking as events arrive. There are two listeners:
-- on *parents* map - every time new parent/child record is added listener kicks in and checks if there is a chain currently rooted at child ID. If there is then this chain is merged into parent ID chain
-- on *chains* multimap - every time an event is added a listener kicks in and checks if the key is indeed a root. If not, the event is moved to its root
+- on *parents* map (ParentEventListener) - every time new parent/child record is added listener kicks in and checks if there is a chain currently rooted at child ID. If there is then this chain is merged into parent ID chain
+- on *chains* multimap (EventChainListener) - every time an event is added a listener kicks in and checks if the key is indeed a root. If not, the event is moved to its root
 
 ## Enrichment
 TODO
