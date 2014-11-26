@@ -3,7 +3,7 @@ rt-order-reporting
 
 [![Build Status](https://travis-ci.org/prystupa/rt-order-reporting.png)](https://travis-ci.org/prystupa/rt-order-reporting)
 
-The 'rt-order-reporting' POC aims to quickly prototype a distributed realtime solution to large volume (hundreds of millions of events daily) order reporting problem. Outstanding questions [here] (#outstanding-questions).
+The 'rt-order-reporting' POC aims to quickly prototype a distributed realtime solution to a large volume (hundreds of millions of events daily) order reporting problem. Outstanding questions [here] (#outstanding-questions).
 
 Order reporting include the following key steps:
   
