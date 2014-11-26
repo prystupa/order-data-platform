@@ -9,7 +9,7 @@ Order reporting include the following key steps:
   
   - Ingestion - collecting order events from trading systems (simulated in the POC)
   - Linking - organizing related order events in chains based on their parent/child relationship; think of a chain a potentially very large order trees (thousands of events)
-  - Enrichment - computing additional properties for complete chains
+  - Enrichment - computing additional properties for complete chains; enrichment can only be done when full chain is received; ideally it is done as soon as full chain is received; incomplete chains are processed on EOD marker
   - Record extraction and validation - running external set of rules to validate reported data before delivery
   - FTP delivery - writing validated reporting records to an FTP stream
 
@@ -37,5 +37,7 @@ We leverage Hazelcast event listeners to perform realtime chain linking as event
 TODO
 
 ## Outstanding questions
+- Overall architecture/best practices - is the approach valid and optimal?
 - Recovery - in the unfortunate event that two nodes are going down (primary node and its backup) at the same time, how would I even detect there is data loss? How do I know which keys are gone and need to be reprocessed?
 - Ingestion speed and lack of back pressure - if clients feed events at a high rate, the server starts dropping events (with 'Event queue is overloaded' message). A test case we used is feeding 1mln events to a single Hazelcast node deplyed on m2.large EC2 instance
+- Large memory consumption - feeding a million tuples to a single HZ server easily blows through 3.5G memory available on m2.large instance; this is somewhat unexpected based on math
