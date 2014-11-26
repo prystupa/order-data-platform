@@ -52,7 +52,7 @@ public class EventIngester {
     }
 
     public void moveToRoot(final EventID from) {
-        final EventID to = getRoot(from);
+        final EventID to = EventUtils.getRoot(from, parents);
         if (!to.equals(from)) {
             final Collection<Event> events = chains.get(from);
             for (Event event : events) {
@@ -65,13 +65,5 @@ public class EventIngester {
 
     public int chainCount() {
         return chains.keySet().size();
-    }
-
-    private EventID getRoot(final EventID eventId) {
-        EventID root = eventId;
-        for (String parent = parents.get(root); parent != null && !parent.equals(root.getId()); parent = parents.get(root)) {
-            root = new EventID(parent, eventId.getPartitionKey());
-        }
-        return root;
     }
 }

@@ -6,6 +6,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventID;
+import com.prystupa.core.EventUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +25,11 @@ public class StoreCommand implements Runnable, Serializable, HazelcastInstanceAw
     @Override
     public void run() {
         final EventID eventID = new EventID(event.getId(), event.getPrimeId());
-        final EventID parentEventID = new EventID(event.getParentId(), event.getPrimeId());
-
         parents.put(eventID, event.getParentId());
-        chains.put(parentEventID, event);
-        logger.info("saved event '{}' to chain '{}'", event, parentEventID);
+
+        final EventID rootID = EventUtils.getRoot(eventID, parents);
+        chains.put(rootID, event);
+        logger.debug("saved event '{}' to chain '{}'", event, rootID);
     }
 
     @Override

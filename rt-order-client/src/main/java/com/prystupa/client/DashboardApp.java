@@ -1,9 +1,7 @@
 package com.prystupa.client;
 
 import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.client.config.ClientAwsConfig;
 import com.hazelcast.client.config.ClientConfig;
-import com.hazelcast.client.config.XmlClientConfigBuilder;
 import com.hazelcast.core.HazelcastInstance;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventID;
@@ -18,13 +16,7 @@ public class DashboardApp {
     public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
 
         final String DEFAULT_PRIME_ID = "PrimeID";
-        final ClientConfig config = new XmlClientConfigBuilder("hazelcast-client.xml").build();
-        final String accessKey = System.getProperty("aws.access-key");
-        if (accessKey != null) {
-            final ClientAwsConfig awsConfig = config.getNetworkConfig().getAwsConfig();
-            awsConfig.setAccessKey(accessKey);
-            awsConfig.setSecretKey(System.getProperty("aws.secret-key"));
-        }
+        final ClientConfig config = ClientUtils.buildConfig();
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         final EventIngester ingester = new EventIngester(client);
 

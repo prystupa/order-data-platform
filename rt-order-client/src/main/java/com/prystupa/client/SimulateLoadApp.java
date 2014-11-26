@@ -1,9 +1,7 @@
 package com.prystupa.client;
 
 import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.client.config.ClientAwsConfig;
 import com.hazelcast.client.config.ClientConfig;
-import com.hazelcast.client.config.XmlClientConfigBuilder;
 import com.hazelcast.core.HazelcastInstance;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventIngester;
@@ -32,13 +30,7 @@ public class SimulateLoadApp {
 
         int total = Integer.parseInt(cmd.getOptionValue("n", "1"));
 
-        final ClientConfig config = new XmlClientConfigBuilder("hazelcast-client.xml").build();
-        final String accessKey = System.getProperty("aws.access-key");
-        if (accessKey != null) {
-            final ClientAwsConfig awsConfig = config.getNetworkConfig().getAwsConfig();
-            awsConfig.setAccessKey(accessKey);
-            awsConfig.setSecretKey(System.getProperty("aws.secret-key"));
-        }
+        final ClientConfig config = ClientUtils.buildConfig();
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         final EventIngester ingester = new EventIngester(client);
 

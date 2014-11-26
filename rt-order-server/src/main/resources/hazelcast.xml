@@ -4,8 +4,8 @@
 
     <network>
         <join>
-            <multicast enabled="false"/>
-            <aws enabled="true">
+            <multicast enabled="${multicast.enabled}"/>
+            <aws enabled="${aws.enabled}">
                 <access-key>${aws.access-key}</access-key>
                 <secret-key>${aws.secret-key}</secret-key>
                 <tag-key>role</tag-key>

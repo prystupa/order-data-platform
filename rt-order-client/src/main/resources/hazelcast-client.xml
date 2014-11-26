@@ -3,7 +3,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <network>
-        <aws enabled="true">
+        <aws enabled="${aws.enabled}">
             <access-key>${aws.access-key}</access-key>
             <secret-key>${aws.secret-key}</secret-key>
             <tag-key>role</tag-key>
