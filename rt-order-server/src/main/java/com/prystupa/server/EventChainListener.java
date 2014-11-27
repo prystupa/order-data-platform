@@ -1,26 +1,27 @@
 package com.prystupa.server;
 
-import com.hazelcast.core.*;
+import akka.actor.ActorRef;
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.core.EntryListener;
+import com.hazelcast.core.MapEvent;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventID;
-import com.prystupa.core.EventStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventChainListener implements EntryListener<EventID, Event>, HazelcastInstanceAware {
+public class EventChainListener implements EntryListener<EventID, Event> {
     private static Logger logger = LoggerFactory.getLogger(EventChainListener.class);
-    private HazelcastInstance hazelcastInstance;
-    private static EventStore eventStore;
+    private final ActorRef linker;
+
+    public EventChainListener(ActorRef linker) {
+        this.linker = linker;
+    }
 
     @Override
     public void entryAdded(EntryEvent<EventID, Event> event) {
-
-        logger.debug("Event added {}", event.getKey());
-        if (eventStore == null) {
-            eventStore = new EventStore(hazelcastInstance);
-        }
-        final EventID eventId = event.getKey();
-        eventStore.moveToRoot(eventId);
+        final EventID eventID = event.getKey();
+        logger.debug("Event added {}", eventID);
+        linker.tell(eventID, ActorRef.noSender());
     }
 
     @Override
@@ -46,10 +47,5 @@ public class EventChainListener implements EntryListener<EventID, Event>, Hazelc
     @Override
     public void mapCleared(MapEvent event) {
 
-    }
-
-    @Override
-    public void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-        this.hazelcastInstance = hazelcastInstance;
     }
 }

@@ -19,10 +19,10 @@ public class EventStore {
     private final IExecutorService executionService;
 
 
-    public EventStore(final HazelcastInstance client) {
-        parents = client.getMap("parents");
-        chains = client.getMultiMap("chains");
-        executionService = client.getExecutorService("default");
+    public EventStore(final HazelcastInstance hazelcast) {
+        parents = hazelcast.getMap("parents");
+        chains = hazelcast.getMultiMap("chains");
+        executionService = hazelcast.getExecutorService("default");
     }
 
     public void save(final Event event) {
