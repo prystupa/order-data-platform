@@ -17,13 +17,13 @@
     <multimap name="chains">
         <value-collection-type>SET</value-collection-type>
         <entry-listeners>
-            <entry-listener local="true" include-value="false">com.prystupa.core.EventChainListener</entry-listener>
+            <entry-listener local="true" include-value="false">com.prystupa.server.EventChainListener</entry-listener>
         </entry-listeners>
     </multimap>
 
     <map name="parents">
         <entry-listeners>
-            <entry-listener local="true" include-value="false">com.prystupa.core.ParentEventListener</entry-listener>
+            <entry-listener local="true" include-value="false">com.prystupa.server.ParentEventListener</entry-listener>
         </entry-listeners>
     </map>
 </hazelcast>

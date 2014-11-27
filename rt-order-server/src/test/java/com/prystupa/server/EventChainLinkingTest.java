@@ -1,10 +1,13 @@
-package com.prystupa.core;
+package com.prystupa.server;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.prystupa.core.Event;
+import com.prystupa.core.EventID;
+import com.prystupa.core.EventStore;
 import com.prystupa.core.test.HazelcastUtils;
 import org.hamcrest.Matchers;
 import org.junit.After;

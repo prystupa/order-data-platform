@@ -1,6 +1,8 @@
-package com.prystupa.core;
+package com.prystupa.server;
 
 import com.hazelcast.core.*;
+import com.prystupa.core.EventID;
+import com.prystupa.core.EventStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

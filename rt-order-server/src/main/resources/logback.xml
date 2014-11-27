@@ -9,8 +9,11 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
 
     <logger name="com.prystupa.core.EventStore" level="WARN"/>
+    <!--<logger name="com.prystupa.core.command.StoreCommand" level="DEBUG"/>-->
+    <logger name="com.prystupa.server.EventChainListener" level="DEBUG"/>
+    <logger name="com.prystupa.server.ParentEventListener" level="DEBUG"/>
 </configuration>
