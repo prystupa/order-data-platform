@@ -4,19 +4,27 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.HazelcastInstanceAware;
 import com.hazelcast.core.Member;
 import com.hazelcast.core.MultiExecutionCallback;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
+import com.hazelcast.nio.serialization.DataSerializable;
 
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 
-public class MultiMapKeyCountCommand implements Callable<Integer>, Serializable, HazelcastInstanceAware {
+public class MultiMapKeyCountCommand implements Callable<Integer>, DataSerializable, HazelcastInstanceAware {
 
-    private final String map;
-    private HazelcastInstance hazelcastInstance;
+    private String map;
+    private transient HazelcastInstance hazelcastInstance;
 
     public MultiMapKeyCountCommand(String map) {
+        this();
         this.map = map;
+    }
+
+    public MultiMapKeyCountCommand() {
+
     }
 
     @Override
@@ -29,6 +37,16 @@ public class MultiMapKeyCountCommand implements Callable<Integer>, Serializable,
     public void setHazelcastInstance(final HazelcastInstance hazelcastInstance) {
 
         this.hazelcastInstance = hazelcastInstance;
+    }
+
+    @Override
+    public void writeData(ObjectDataOutput out) throws IOException {
+        out.writeUTF(map);
+    }
+
+    @Override
+    public void readData(ObjectDataInput in) throws IOException {
+        map = in.readUTF();
     }
 
     public static class ResultCollector implements MultiExecutionCallback {

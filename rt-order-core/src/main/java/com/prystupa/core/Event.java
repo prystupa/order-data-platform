@@ -1,18 +1,27 @@
 package com.prystupa.core;
 
 import com.google.common.base.Objects;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
+import com.hazelcast.nio.serialization.DataSerializable;
 
-import java.io.Serializable;
+import java.io.IOException;
 
-public class Event implements Serializable {
-    private final String id;
-    private final String parentId;
-    private final String primeId;
+public class Event implements DataSerializable {
+    private String id;
+    private String parentId;
+    private String primeId;
 
     public Event(final String id, final String parentId, String primeId) {
+        this();
+
         this.id = id;
         this.parentId = parentId;
         this.primeId = primeId;
+    }
+
+    public Event() {
+
     }
 
     public String getId() {
@@ -49,5 +58,19 @@ public class Event implements Serializable {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    @Override
+    public void writeData(ObjectDataOutput out) throws IOException {
+        out.writeUTF(id);
+        out.writeUTF(parentId);
+        out.writeUTF(primeId);
+    }
+
+    @Override
+    public void readData(ObjectDataInput in) throws IOException {
+        id = in.readUTF();
+        parentId = in.readUTF();
+        primeId = in.readUTF();
     }
 }
