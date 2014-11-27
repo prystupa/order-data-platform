@@ -14,6 +14,7 @@ public class EventChainListener implements EntryListener<EventID, Event>, Hazelc
 
     @Override
     public void entryAdded(EntryEvent<EventID, Event> event) {
+
         logger.debug("Event added {}", event.getKey());
         if (eventStore == null) {
             eventStore = new EventStore(hazelcastInstance);

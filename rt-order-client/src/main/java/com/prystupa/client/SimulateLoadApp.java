@@ -6,6 +6,7 @@ import com.hazelcast.core.ExecutionCallback;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
 import com.prystupa.core.Event;
+import com.prystupa.core.EventStore;
 import com.prystupa.core.command.StoreCommand;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
@@ -26,17 +27,21 @@ public class SimulateLoadApp {
 
         final Options options = new Options();
         options.addOption("n", true, "number of order events to emulate");
+        options.addOption("w", false, "automatically wait for linking to complete");
 
         CommandLineParser parser = new GnuParser();
         CommandLine cmd = parser.parse(options, args);
 
         int total = Integer.parseInt(cmd.getOptionValue("n", "1"));
+        boolean wait = cmd.hasOption("w");
 
         final ClientConfig config = ClientUtils.buildConfig();
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         final IExecutorService executorService = client.getExecutorService("default");
 
-        final List<Event> events = generateEvents(total);
+        final List<Event> events = new ArrayList<>(total);
+        final int chains = generateEvents(total, events);
+        logger.info("Created {} chain(s)", chains);
         Collections.shuffle(events);
 
         final AtomicInteger batch = new AtomicInteger(0);
@@ -55,11 +60,25 @@ public class SimulateLoadApp {
                 break;
             }
         }
+
+        final EventStore store = new EventStore(client);
+        int count;
+        do {
+            count = store.chainCount();
+            logger.info("Linked chains count: {}", count);
+        } while (wait && count > chains);
+
         client.shutdown();
     }
 
-    private static List<Event> generateEvents(final int count) {
-        List<Event> list = new ArrayList<>(count);
+    /**
+     * Generates requested number of events grouping them randomly into chains
+     *
+     * @param count requested number of events to generate
+     * @param list  list to add generated events to
+     * @return the number of generated chains
+     */
+    private static int generateEvents(final int count, final List<Event> list) {
 
         int remaining = count;
         int chains = 0;
@@ -80,8 +99,7 @@ public class SimulateLoadApp {
             chains++;
         }
 
-        logger.info("Created {} chain(s)", chains);
-        return list;
+        return chains;
     }
 
     private static int randInt(int min, int max) {

@@ -1,23 +1,28 @@
 package com.prystupa.core;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
+import com.prystupa.core.command.MultiMapKeyCountCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 
 public class EventStore {
 
     private final Logger logger = LoggerFactory.getLogger(EventStore.class);
     private final IMap<EventID, String> parents;
     private final MultiMap<EventID, Event> chains;
+    private final IExecutorService executionService;
 
 
     public EventStore(final HazelcastInstance client) {
         parents = client.getMap("parents");
         chains = client.getMultiMap("chains");
+        executionService = client.getExecutorService("default");
     }
 
     public void save(final Event event) {
@@ -59,7 +64,9 @@ public class EventStore {
         }
     }
 
-    public int chainCount() {
-        return chains.keySet().size();
+    public int chainCount() throws ExecutionException, InterruptedException {
+        final MultiMapKeyCountCommand.ResultCollector collector = new MultiMapKeyCountCommand.ResultCollector();
+        executionService.submitToAllMembers(new MultiMapKeyCountCommand("chains"), collector);
+        return collector.getResult().get();
     }
 }
