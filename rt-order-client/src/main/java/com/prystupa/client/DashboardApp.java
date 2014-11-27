@@ -2,10 +2,13 @@ package com.prystupa.client;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.core.ExecutionCallback;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventID;
 import com.prystupa.core.EventStore;
+import com.prystupa.core.command.StoreCommand;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -19,6 +22,7 @@ public class DashboardApp {
         final ClientConfig config = ClientUtils.buildConfig();
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         final EventStore store = new EventStore(client);
+        final IExecutorService executorService = client.getExecutorService("default");
 
         System.out.println("Enter order pairs, empty string to exit:");
         Scanner scanner = new Scanner(System.in);
@@ -46,6 +50,17 @@ public class DashboardApp {
             String primeId = order.length > 2 ? order[2] : DEFAULT_PRIME_ID;
             Event event = new Event(id, parentId, primeId);
 
+            executorService.submitToKeyOwner(new StoreCommand(event), primeId, new ExecutionCallback() {
+                @Override
+                public void onResponse(Object response) {
+
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+
+                }
+            });
             store.save(event);
         }
 

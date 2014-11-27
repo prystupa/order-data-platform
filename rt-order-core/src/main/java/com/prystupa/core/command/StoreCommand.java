@@ -4,10 +4,13 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.HazelcastInstanceAware;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
 public class StoreCommand implements Runnable, Serializable, HazelcastInstanceAware {
+    private transient final static Logger logger = LoggerFactory.getLogger(StoreCommand.class);
     private final Event event;
     private transient EventStore store;
 
@@ -17,6 +20,7 @@ public class StoreCommand implements Runnable, Serializable, HazelcastInstanceAw
 
     @Override
     public void run() {
+        logger.debug("storing event {}", event);
         store.save(event);
     }
 
