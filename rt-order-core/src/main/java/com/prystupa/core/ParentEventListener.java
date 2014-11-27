@@ -1,13 +1,17 @@
 package com.prystupa.core;
 
 import com.hazelcast.core.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParentEventListener implements EntryListener<EventID, String>, HazelcastInstanceAware {
+    private static Logger logger = LoggerFactory.getLogger(ParentEventListener.class);
     private HazelcastInstance hazelcastInstance;
     private static EventStore eventStore;
 
     @Override
     public void entryAdded(EntryEvent<EventID, String> event) {
+        logger.debug("Parent added {}", event.getKey());
         if (eventStore == null) {
             eventStore = new EventStore(hazelcastInstance);
         }
