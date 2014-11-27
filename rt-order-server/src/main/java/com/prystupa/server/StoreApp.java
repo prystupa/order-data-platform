@@ -17,6 +17,10 @@ public class StoreApp {
     public static void main(String[] args) {
 
         final HazelcastInstance server = Hazelcast.newHazelcastInstance();
+        setupEntryListeners(server);
+    }
+
+    public static void setupEntryListeners(final HazelcastInstance server) {
         final EventStore store = new EventStore(server);
 
         // Akka setup

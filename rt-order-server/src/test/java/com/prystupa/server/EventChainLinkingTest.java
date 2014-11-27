@@ -16,7 +16,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class EventChainLinkingTest {
 
@@ -28,6 +31,8 @@ public class EventChainLinkingTest {
     public void setup() {
         Config config = new ClasspathXmlConfig("event-chain-linking.xml");
         server = Hazelcast.newHazelcastInstance(config);
+        StoreApp.setupEntryListeners(server);
+
         client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor(server));
         store = new EventStore(client);
     }
@@ -40,17 +45,15 @@ public class EventChainLinkingTest {
     }
 
     @Test
-    public void ingestChildAfterRootMovesChildToRootChain() throws InterruptedException, ExecutionException {
+    public void ingestChildAfterRootMovesChildToRootChain() throws InterruptedException, ExecutionException, TimeoutException {
         // Arrange
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
         store.save(root);
-        waitIngester();
 
         // Act
         store.save(child);
-        waitIngester();
-
+        waitChains(1).get(10, TimeUnit.SECONDS);
 
         // Assert
         Collection<Event> actual = store.chain(new EventID("1", "P1"));
@@ -58,16 +61,15 @@ public class EventChainLinkingTest {
     }
 
     @Test
-    public void ingestRootAfterChildMovesChildToRootChain() throws InterruptedException, ExecutionException {
+    public void ingestRootAfterChildMovesChildToRootChain() throws InterruptedException, ExecutionException, TimeoutException {
         // Arrange
         Event child = new Event("2", "1", "P1");
         Event root = new Event("1", "1", "P1");
         store.save(child);
-        waitIngester();
 
         // Act
         store.save(root);
-        waitIngester();
+        waitChains(1).get(10, TimeUnit.SECONDS);
 
         // Assert
         Collection<Event> actual = store.chain(new EventID("1", "P1"));
@@ -75,29 +77,28 @@ public class EventChainLinkingTest {
     }
 
     @Test
-    public void ingestMissingLinkMergesChainsToRoot() throws InterruptedException, ExecutionException {
+    public void ingestMissingLinkMergesChainsToRoot() throws InterruptedException, ExecutionException, TimeoutException {
         Event grandChild = new Event("3", "2", "P1");
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
         store.save(grandChild);
-        waitIngester();
         store.save(root);
-        waitIngester();
+        waitChains(2).get(10, TimeUnit.SECONDS);
 
         // Act
         store.save(child);
-        waitIngester();
+        waitChains(1).get(10, TimeUnit.SECONDS);
 
         // Assert
         Collection<Event> actual = store.chain(new EventID("1", "P1"));
         Assert.assertThat(actual, Matchers.containsInAnyOrder(root, child, grandChild));
     }
 
-    private void waitIngester() throws ExecutionException, InterruptedException {
-
-        // simple trick to get a chance for all async processing to complete, mainly entry listeners on "chains" and "parents" maps
-        // seems to work - if it breaks need to think of more robust synchronization
-        client.getMultiMap("chains").size();
-        client.getMap("parents").size();
+    private CompletableFuture<Void> waitChains(final int expectedChains) {
+        return CompletableFuture.runAsync(() -> {
+            do {
+                Thread.yield();
+            } while (client.getMultiMap("chains").keySet().size() != expectedChains);
+        });
     }
 }
