@@ -69,6 +69,7 @@ public class DashboardApp {
                     count = store.chainCount();
                     if (count >= chains) {
                         logger.info("Linked chains count: {}", count);
+                        Thread.sleep(5 * 1000);
                     }
                 } while (count != chains);
 
