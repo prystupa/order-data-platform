@@ -4,10 +4,11 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.ExecutionCallback;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.ICountDownLatch;
 import com.hazelcast.core.IExecutorService;
 import com.prystupa.core.Event;
-import com.prystupa.core.EventStore;
 import com.prystupa.core.command.StoreCommand;
+import com.prystupa.core.monitor.LoaderStats;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SimulateLoadApp {
@@ -27,13 +29,11 @@ public class SimulateLoadApp {
 
         final Options options = new Options();
         options.addOption("n", true, "number of order events to emulate");
-        options.addOption("w", false, "automatically wait for linking to complete");
 
         CommandLineParser parser = new GnuParser();
         CommandLine cmd = parser.parse(options, args);
 
         int total = Integer.parseInt(cmd.getOptionValue("n", "1"));
-        boolean wait = cmd.hasOption("w");
 
         final ClientConfig config = ClientUtils.buildConfig();
         final HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
@@ -41,8 +41,12 @@ public class SimulateLoadApp {
 
         final List<Event> events = new ArrayList<>(total);
         final int chains = generateEvents(total, events);
-        logger.info("Created {} chain(s)", chains);
         Collections.shuffle(events);
+        client.<LoaderStats>getSet("loaderStats").add(new LoaderStats(client.getLocalEndpoint().getUuid(), chains, total));
+        logger.info("Created {} chain(s)", chains);
+
+        final ICountDownLatch latch = client.getCountDownLatch("go");
+        latch.await(1, TimeUnit.DAYS);
 
         final AtomicInteger batch = new AtomicInteger(0);
         for (Event event : events) {
@@ -60,13 +64,6 @@ public class SimulateLoadApp {
                 break;
             }
         }
-
-        final EventStore store = new EventStore(client);
-        int count;
-        do {
-            count = store.chainCount();
-            logger.info("Linked chains count: {}", count);
-        } while (wait && count > chains);
 
         client.shutdown();
     }

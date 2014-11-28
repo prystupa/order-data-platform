@@ -7,6 +7,7 @@ public class CommandFactory implements DataSerializableFactory {
     public static final int FACTORY_ID = 2;
     public static final int STORE_TYPE = 1;
     public static final int MM_KEY_COUNT_TYPE = 2;
+    public static final int LOADER_STATS_TYPE = 3;
 
     @Override
     public IdentifiedDataSerializable create(int typeId) {
@@ -15,6 +16,8 @@ public class CommandFactory implements DataSerializableFactory {
                 return new StoreCommand();
             case MM_KEY_COUNT_TYPE:
                 return new MultiMapKeyCountCommand();
+            case LOADER_STATS_TYPE:
+                return new LoaderStatsCommand();
         }
 
         return null;

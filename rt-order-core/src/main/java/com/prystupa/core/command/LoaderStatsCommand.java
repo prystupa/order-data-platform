@@ -1,32 +1,33 @@
 package com.prystupa.core.command;
 
+import com.hazelcast.core.Client;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.HazelcastInstanceAware;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
+import com.prystupa.core.monitor.LoaderStats;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
-public class MultiMapKeyCountCommand implements Callable<Integer>, IdentifiedDataSerializable, HazelcastInstanceAware {
+public class LoaderStatsCommand implements Callable<Set<LoaderStats>>, IdentifiedDataSerializable, HazelcastInstanceAware {
 
-    private String map;
     private transient HazelcastInstance hazelcastInstance;
 
-    public MultiMapKeyCountCommand(String map) {
-        this();
-        this.map = map;
-    }
-
-    public MultiMapKeyCountCommand() {
-
-    }
-
     @Override
-    public Integer call() throws Exception {
+    public Set<LoaderStats> call() throws Exception {
 
-        return hazelcastInstance.getMultiMap(map).localKeySet().size();
+        final Set<String> connectedClients = hazelcastInstance.getClientService().getConnectedClients()
+                .stream()
+                .map(Client::getUuid)
+                .collect(Collectors.toSet());
+
+        return hazelcastInstance.<LoaderStats>getSet("loaderStats").stream()
+                .filter(loaderStats -> connectedClients.contains(loaderStats.getUuid()))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -37,12 +38,10 @@ public class MultiMapKeyCountCommand implements Callable<Integer>, IdentifiedDat
 
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
-        out.writeUTF(map);
     }
 
     @Override
     public void readData(ObjectDataInput in) throws IOException {
-        map = in.readUTF();
     }
 
     @Override
@@ -52,10 +51,10 @@ public class MultiMapKeyCountCommand implements Callable<Integer>, IdentifiedDat
 
     @Override
     public int getId() {
-        return CommandFactory.MM_KEY_COUNT_TYPE;
+        return CommandFactory.LOADER_STATS_TYPE;
     }
 
-    public static class ResultCollector extends IntegerCountCollector {
+    public static class ResultCollector extends SetCollector<LoaderStats> {
 
     }
 }
