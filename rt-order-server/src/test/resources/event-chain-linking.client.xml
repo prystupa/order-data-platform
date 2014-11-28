@@ -2,15 +2,6 @@
                   xmlns="http://www.hazelcast.com/schema/client-config"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <network>
-        <aws enabled="${aws.enabled}">
-            <access-key>${aws.access-key}</access-key>
-            <secret-key>${aws.secret-key}</secret-key>
-            <tag-key>role</tag-key>
-            <tag-value>hz-server</tag-value>
-        </aws>
-    </network>
-
     <serialization>
         <data-serializable-factories>
             <data-serializable-factory factory-id="1">com.prystupa.core.EventFactory</data-serializable-factory>

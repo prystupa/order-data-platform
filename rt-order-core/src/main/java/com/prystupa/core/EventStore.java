@@ -26,7 +26,7 @@ public class EventStore {
     }
 
     public void save(final Event event) {
-        final EventID eventID = new EventID(event.getId(), event.getPrimeId());
+        final EventID eventID = new EventID(event.getEventId(), event.getPrimeId());
         parents.put(eventID, event.getParentId());
 
         final EventID rootID = findRoot(eventID);
@@ -46,7 +46,7 @@ public class EventStore {
 
     public EventID findRoot(final EventID eventId) {
         EventID root = eventId;
-        for (String parent = parents.get(root); parent != null && !parent.equals(root.getId()); parent = parents.get(root)) {
+        for (String parent = parents.get(root); parent != null && !parent.equals(root.getEventId()); parent = parents.get(root)) {
             root = new EventID(parent, eventId.getPartitionKey());
         }
         return root;

@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
@@ -22,10 +23,10 @@ public class EventStoreTest {
     EventStore target;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         Config config = new ClasspathXmlConfig("event-ingester.xml");
         server = Hazelcast.newHazelcastInstance(config);
-        client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor(server));
+        client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor("event-ingester.client.xml", server));
         target = new EventStore(client);
     }
 

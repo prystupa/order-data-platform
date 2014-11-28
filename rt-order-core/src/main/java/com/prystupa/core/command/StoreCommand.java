@@ -4,7 +4,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.HazelcastInstanceAware;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
-import com.hazelcast.nio.serialization.DataSerializable;
+import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 import com.prystupa.core.Event;
 import com.prystupa.core.EventStore;
 import org.slf4j.Logger;
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class StoreCommand implements Runnable, DataSerializable, HazelcastInstanceAware {
+public class StoreCommand implements Runnable, IdentifiedDataSerializable, HazelcastInstanceAware {
     private transient final static Logger logger = LoggerFactory.getLogger(StoreCommand.class);
     private Event event;
     private transient EventStore store;
@@ -47,5 +47,15 @@ public class StoreCommand implements Runnable, DataSerializable, HazelcastInstan
     public void readData(ObjectDataInput in) throws IOException {
         event = new Event();
         event.readData(in);
+    }
+
+    @Override
+    public int getFactoryId() {
+        return CommandFactory.FACTORY_ID;
+    }
+
+    @Override
+    public int getId() {
+        return CommandFactory.STORE_TYPE;
     }
 }

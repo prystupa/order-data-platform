@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -28,12 +29,12 @@ public class EventChainLinkingTest {
     EventStore store;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         Config config = new ClasspathXmlConfig("event-chain-linking.xml");
         server = Hazelcast.newHazelcastInstance(config);
         StoreApp.setupEntryListeners(server);
 
-        client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor(server));
+        client = HazelcastClient.newHazelcastClient(HazelcastUtils.clientConfigFor("event-chain-linking.client.xml", server));
         store = new EventStore(client);
     }
 
