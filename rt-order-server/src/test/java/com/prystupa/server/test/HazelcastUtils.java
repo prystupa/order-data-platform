@@ -1,4 +1,4 @@
-package com.prystupa.core.test;
+package com.prystupa.server.test;
 
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;

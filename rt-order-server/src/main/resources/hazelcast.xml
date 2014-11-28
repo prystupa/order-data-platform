@@ -17,7 +17,6 @@
     <serialization>
         <data-serializable-factories>
             <data-serializable-factory factory-id="1">com.prystupa.core.EventFactory</data-serializable-factory>
-            <data-serializable-factory factory-id="2">com.prystupa.core.command.CommandFactory</data-serializable-factory>
         </data-serializable-factories>
     </serialization>
 

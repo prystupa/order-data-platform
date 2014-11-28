@@ -93,7 +93,6 @@ public class DashboardApp {
 
                     }
                 });
-                store.save(event);
             }
         }
 
