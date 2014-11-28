@@ -46,6 +46,7 @@ public class SimulateLoadApp {
         logger.info("Created {} chain(s)", chains);
 
         final ICountDownLatch latch = client.getCountDownLatch("go");
+        logger.info("Waiting on 'go' latch, currently {}", latch.getCount());
         latch.await(1, TimeUnit.DAYS);
 
         final AtomicInteger batch = new AtomicInteger(0);
