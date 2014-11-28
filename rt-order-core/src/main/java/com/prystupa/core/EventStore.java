@@ -69,4 +69,8 @@ public class EventStore {
         executionService.submitToAllMembers(new MultiMapKeyCountCommand("chains"), collector);
         return collector.getResult().get();
     }
+
+    public int eventCount() {
+        return chains.size();
+    }
 }

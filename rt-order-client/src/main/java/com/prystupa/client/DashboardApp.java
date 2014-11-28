@@ -42,7 +42,7 @@ public class DashboardApp {
             if (line.equals("clear")) {
                 store.clear();
             } else if (line.equals("count")) {
-                System.out.println(store.chainCount());
+                System.out.printf("%,d/%,d\n", store.chainCount(), store.eventCount());
             } else if (line.startsWith("chain")) {
                 String[] parts = line.split("\\s");
                 String chainId = parts[1];
