@@ -41,6 +41,8 @@ public class DashboardApp {
         while (!(line = scanner.nextLine()).equals("")) {
             if (line.equals("clear")) {
                 store.clear();
+            } else if (line.equals("clear loaders")) {
+                store.clearLoaders();
             } else if (line.equals("count")) {
                 System.out.printf("%,d/%,d\n", store.chainCount(), store.eventCount());
             } else if (line.startsWith("chain")) {

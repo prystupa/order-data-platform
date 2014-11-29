@@ -1,10 +1,8 @@
 package com.prystupa.core;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IExecutorService;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.MultiMap;
+import com.hazelcast.core.*;
 import com.prystupa.core.command.MultiMapKeyCountCommand;
+import com.prystupa.core.monitor.LoaderStats;
 
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
@@ -14,12 +12,13 @@ public class EventStore {
     private final IMap<EventID, String> parents;
     private final MultiMap<EventID, Event> chains;
     private final IExecutorService executionService;
-
+    private final ISet<LoaderStats> loaders;
 
     public EventStore(final HazelcastInstance hazelcast) {
         parents = hazelcast.getMap("parents");
         chains = hazelcast.getMultiMap("chains");
         executionService = hazelcast.getExecutorService("default");
+        loaders = hazelcast.<LoaderStats>getSet("loaderStats");
     }
 
     public void clear() {
@@ -40,5 +39,9 @@ public class EventStore {
 
     public int eventCount() {
         return chains.size();
+    }
+
+    public void clearLoaders() {
+        loaders.clear();
     }
 }
