@@ -49,22 +49,7 @@ public class SimulateLoadApp {
         logger.info("Waiting on 'go' latch, currently {}", latch.getCount());
         latch.await(1, TimeUnit.DAYS);
 
-        final AtomicInteger batch = new AtomicInteger(0);
-        for (Event event : events) {
-            final CompletableFuture<Object> future = ingest(executorService, event);
-            future.thenRun(() -> {
-                int ingested = batch.addAndGet(1);
-                if (ingested % 10000 == 0 || ingested == total) {
-                    logger.info("Ingested {} event(s)", ingested);
-                }
-            });
-        }
-
-        for (; ; ) {
-            if (batch.get() >= total) {
-                break;
-            }
-        }
+        ingestCommand(executorService, total, events);
 
         client.shutdown();
     }
@@ -105,6 +90,25 @@ public class SimulateLoadApp {
         // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
         return rand.nextInt((max - min) + 1) + min;
+    }
+
+    private static void ingestCommand(final IExecutorService executorService, final int total, final List<Event> events) throws InterruptedException {
+        final AtomicInteger batch = new AtomicInteger(0);
+        for (Event event : events) {
+            final CompletableFuture<Object> future = ingest(executorService, event);
+            future.thenRun(() -> {
+                int ingested = batch.addAndGet(1);
+                if (ingested % 10000 == 0 || ingested == total) {
+                    logger.info("Ingested {} event(s)", ingested);
+                }
+            });
+        }
+
+        for (; ; ) {
+            if (batch.get() >= total) {
+                break;
+            }
+        }
     }
 
     public static CompletableFuture<Object> ingest(final IExecutorService executorService, final Event event) throws InterruptedException {
