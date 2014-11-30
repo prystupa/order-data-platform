@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SimulateLoadApp {
 
     private static Logger logger = LoggerFactory.getLogger(SimulateLoadApp.class);
-    private static Random rand = new Random();
+    private static Random rand = new Random(0);
 
     public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, ParseException {
 

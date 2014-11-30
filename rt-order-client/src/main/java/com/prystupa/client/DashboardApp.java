@@ -50,13 +50,22 @@ public class DashboardApp {
                 String chainId = parts[1];
                 String primeId = parts.length > 2 ? parts[2] : DEFAULT_PRIME_ID;
                 System.out.println(store.chain(new EventID(chainId, primeId)));
-            } else if (line.equals("loaders")) {
-                final LoaderStatsCommand.ResultCollector collector = new LoaderStatsCommand.ResultCollector();
-                executorService.submitToAllMembers(new LoaderStatsCommand(), collector);
-                final Set<LoaderStats> loaders = collector.getResult().get();
-                final int chains = loaders.stream().mapToInt(LoaderStats::getChains).sum();
-                final int events = loaders.stream().mapToInt(LoaderStats::getEvents).sum();
-                System.out.printf("Loaders: %,d, chains: %,d, events: %,d\n", loaders.size(), chains, events);
+            } else if (line.startsWith("loaders")) {
+                final String[] largs = line.split("\\s");
+                final int target = largs.length > 1 ? Integer.parseInt(largs[1]) : -1;
+                do {
+                    final LoaderStatsCommand.ResultCollector collector = new LoaderStatsCommand.ResultCollector();
+                    executorService.submitToAllMembers(new LoaderStatsCommand(), collector);
+                    final Set<LoaderStats> loaders = collector.getResult().get();
+                    final int chains = loaders.stream().mapToInt(LoaderStats::getChains).sum();
+                    final int events = loaders.stream().mapToInt(LoaderStats::getEvents).sum();
+                    System.out.printf("Loaders: %,d, chains: %,d, events: %,d\n", loaders.size(), chains, events);
+                    if (target > loaders.size()) {
+                        Thread.sleep(5000);
+                    } else {
+                        break;
+                    }
+                } while (true);
             } else if (line.equals("go")) {
                 final LoaderStatsCommand.ResultCollector collector = new LoaderStatsCommand.ResultCollector();
                 executorService.submitToAllMembers(new LoaderStatsCommand(), collector);
