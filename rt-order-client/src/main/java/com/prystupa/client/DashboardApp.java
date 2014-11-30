@@ -71,9 +71,10 @@ public class DashboardApp {
                 executorService.submitToAllMembers(new LoaderStatsCommand(), collector);
                 final Set<LoaderStats> loaders = collector.getResult().get();
                 final int chains = loaders.stream().mapToInt(LoaderStats::getChains).sum();
+                final int events = loaders.stream().mapToInt(LoaderStats::getEvents).sum();
 
                 latch.countDown();
-                logger.info("GO latch count: {}, expected chains: {}", latch.getCount(), chains);
+                logger.info("GO latch count: {}, expected chains: {}, events: {}", latch.getCount(), chains, events);
 
                 int count;
                 do {
