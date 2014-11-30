@@ -4,6 +4,7 @@
 
     <network>
         <join>
+            <tcp-ip connection-timeout-seconds="20" enabled="false"/>
             <multicast enabled="${multicast.enabled}"/>
             <aws enabled="${aws.enabled}">
                 <access-key>${aws.access-key}</access-key>
