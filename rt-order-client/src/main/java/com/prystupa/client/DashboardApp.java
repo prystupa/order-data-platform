@@ -67,6 +67,7 @@ public class DashboardApp {
                     }
                 } while (true);
             } else if (line.equals("go")) {
+                store.clear();
                 final LoaderStatsCommand.ResultCollector collector = new LoaderStatsCommand.ResultCollector();
                 executorService.submitToAllMembers(new LoaderStatsCommand(), collector);
                 final Set<LoaderStats> loaders = collector.getResult().get();
