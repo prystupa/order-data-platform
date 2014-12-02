@@ -1,6 +1,7 @@
-<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-3.3.xsd"
-           xmlns="http://www.hazelcast.com/schema/config"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<hazelcast
+        xsi:schemaLocation="http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-3.3.xsd"
+        xmlns="http://www.hazelcast.com/schema/config"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <network>
         <join>
@@ -20,5 +21,10 @@
             <data-serializable-factory factory-id="1">com.prystupa.core.EventFactory</data-serializable-factory>
         </data-serializable-factories>
     </serialization>
+
+    <executor-service name="default">
+        <pool-size>64</pool-size>
+        <queue-capacity>2147483647</queue-capacity>
+    </executor-service>
 
 </hazelcast>
