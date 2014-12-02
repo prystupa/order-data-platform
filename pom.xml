@@ -26,6 +26,7 @@
         <module>rt-order-client</module>
         <module>rt-order-server</module>
         <module>rt-order-core</module>
+        <module>rt-order-management</module>
     </modules>
 
     <dependencyManagement>

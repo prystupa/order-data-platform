@@ -78,12 +78,14 @@ public class DashboardApp {
                 logger.info("GO latch count: {}, expected chains: {}, events: {}", latch.getCount(), chains, events);
 
                 int count;
+                boolean first = true;
                 do {
                     count = store.chainCount();
-                    if (count >= chains) {
+                    if (count >= chains || (first && count > 0)) {
                         logger.info("Linked chains count: {}", count);
                         Thread.sleep(5 * 1000);
                     }
+                    first = false;
                 } while (count != chains);
 
                 latch.trySetCount(1);
