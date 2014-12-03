@@ -8,9 +8,14 @@
         </encoder>
     </appender>
 
+    <appender name="SIMPLEDB" class="com.kikini.logging.simpledb.SimpleDBAppender">
+        <DomainName>rt-order-logs</DomainName>
+        <AccessId>${aws.access-key}</AccessId>
+        <SecretKey>${aws.secret-key}</SecretKey>
+    </appender>
+
     <root level="INFO">
+        <appender-ref ref="SIMPLEDB"/>
         <appender-ref ref="STDOUT"/>
     </root>
-
-    <logger name="com.prystupa.core.EventStore" level="WARN"/>
 </configuration>
