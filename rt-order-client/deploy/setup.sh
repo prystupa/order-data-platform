@@ -12,5 +12,7 @@ cd /opt/jdk1.8.0_25/
 alternatives --install /usr/bin/java java /opt/jdk1.8.0_25/bin/java 2
 
 popd
-java $JAVA_OPTS -Daws.enabled=true -Daws.access-key=$AWS_ACCESS_KEY -Daws.secret-key=$AWS_SECRET_KEY \
+java $JAVA_OPTS \
+    -Daws.enabled=true -Daws.access-key=$AWS_ACCESS_KEY -Daws.secret-key=$AWS_SECRET_KEY \
+    -Dhazelcast.logging.type=slf4j \
     -cp './*' com.prystupa.client.SimulateLoadApp -n=${RT_SIMULATOR_EVENTS:-1}
