@@ -1,5 +1,6 @@
 package com.prystupa.generate.mapreduce;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 
@@ -13,8 +14,9 @@ public class SimulatorParametersInputFormat extends InputFormat<LongWritable, Te
 
     @Override
     public List<InputSplit> getSplits(JobContext jobContext) throws IOException {
-        final int eventCount = Integer.parseInt(System.getProperty("event-count"));
-        if (eventCount < 0) {
+        Configuration configuration = jobContext.getConfiguration();
+        int eventCount = configuration.getInt("event-count", 0);
+        if (eventCount <= 0) {
             throw new IOException("Invalid order events count: " + eventCount);
         }
 

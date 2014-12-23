@@ -40,6 +40,6 @@ public class OrderEventGeneratorApp extends Configured implements Tool {
         job.setNumReduceTasks(OMS_TOTAL);
         FileOutputFormat.setOutputPath(job, new Path(args[0]));
 
-        return job.waitForCompletion(true) ? 0 : 1;
+        return job.waitForCompletion(false) ? 0 : 1;
     }
 }
