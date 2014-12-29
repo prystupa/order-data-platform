@@ -34,7 +34,7 @@ public class SimulatorParametersInputFormat extends InputFormat<LongWritable, Te
     }
 
     @Override
-    public RecordReader<LongWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext taskContext) throws IOException, InterruptedException {
+    public RecordReader<LongWritable, Text> createRecordReader(final InputSplit split, final TaskAttemptContext taskContext) throws IOException, InterruptedException {
         final int count = 1;
 
         return new RecordReader<LongWritable, Text>() {

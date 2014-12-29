@@ -14,6 +14,12 @@
 
     <name>hd-order-processor</name>
 
+    <!-- override the parent 1.8 to instead use 1.7 that is available in Hadoop cluster -->
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <!-- Logging -->
         <dependency>
