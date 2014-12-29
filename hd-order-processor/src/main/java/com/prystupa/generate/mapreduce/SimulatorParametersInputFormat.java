@@ -3,6 +3,7 @@ package com.prystupa.generate.mapreduce;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.util.StringUtils;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -40,7 +41,7 @@ public class SimulatorParametersInputFormat extends InputFormat<LongWritable, Te
         return new RecordReader<LongWritable, Text>() {
             private int records = 0;
             private final LongWritable key = new LongWritable(0L);
-            private final Text value = new Text(String.join(":", split.getLocations()));
+            private final Text value = new Text(StringUtils.join(":", split.getLocations()));
 
             @Override
             public void initialize(InputSplit split, TaskAttemptContext context) {
