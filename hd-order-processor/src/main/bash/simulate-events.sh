@@ -7,4 +7,4 @@ hadoop jar hd-order-processor-1.0-SNAPSHOT.jar com.prystupa.generate.OrderEventG
     -libjars=$LIBJARS  \
     -D event-count=${N:-1000000} \
     -D verbose=${VERBOSE:-false} \
-    ${OUT:-output}
+    ${OUT:-events/`date "+%Y-%m-%d"`}

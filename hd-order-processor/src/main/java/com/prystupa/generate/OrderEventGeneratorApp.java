@@ -10,6 +10,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
@@ -43,11 +44,15 @@ public class OrderEventGeneratorApp extends Configured implements Tool {
         job.setMapOutputValueClass(OrderEventWritable.class);
         job.setPartitionerClass(OrderEventByOmsPartitioner.class);
         job.setNumReduceTasks(OMS_TOTAL);
+        job.setOutputFormatClass(SequenceFileOutputFormat.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(OrderEventWritable.class);
         FileOutputFormat.setOutputPath(job, new Path(args[0]));
 
         Configuration configuration = job.getConfiguration();
         boolean succeeded = job.waitForCompletion(configuration.getBoolean("verbose", false));
-        logger.info("Completed the job, succeeded: {}", succeeded);
+        if (succeeded) logger.info("Completed the job");
+        else logger.error("The job failed");
 
         return succeeded ? 0 : 1;
     }
