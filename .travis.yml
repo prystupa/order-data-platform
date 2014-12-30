@@ -10,7 +10,7 @@ deploy:
     - rt-order-server/target/rt-order-server-1.0-SNAPSHOT-bin.tar.gz
     - rt-order-client/target/rt-order-client-1.0-SNAPSHOT-bin.tar.gz
     - rt-order-management/target/rt-order-management-1.0-SNAPSHOT-bin.tar.gz
-    - hd-order-processor/target/hd-order-processor-1.0-SNAPSHOT-bin.tar.gz
+    - hd-order-processor/target/hd-event-generator-1.0-SNAPSHOT-bin.tar.gz
   skip_cleanup: true
   on:
     repo: prystupa/rt-order-reporting

@@ -29,7 +29,7 @@
         <module>rt-order-server</module>
         <module>rt-order-core</module>
         <module>rt-order-management</module>
-        <module>hd-order-processor</module>
+        <module>hd-event-generator</module>
     </modules>
 
     <dependencyManagement>

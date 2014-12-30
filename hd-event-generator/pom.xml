@@ -8,11 +8,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hd-order-processor</artifactId>
+    <artifactId>hd-event-generator</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>hd-order-processor</name>
+    <name>hd-event-generator</name>
 
     <!-- override the parent 1.8 to instead use 1.7 that is available in Hadoop cluster -->
     <properties>
