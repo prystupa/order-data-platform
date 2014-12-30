@@ -2,6 +2,7 @@ package com.prystupa.generate;
 
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskCounter;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -39,7 +40,8 @@ public class OrderEventCountApp extends Configured implements Tool {
 
         boolean succeeded = job.waitForCompletion(getConf().getBoolean("verbose", false));
         if (succeeded) {
-            System.out.printf("Found %,d events\n", job.getCounters().findCounter(TaskCounter.MAP_INPUT_RECORDS).getValue());
+            Counters counters = job.getCounters();
+            System.out.printf("%-12s%,12d\n", "events", counters.findCounter(TaskCounter.MAP_INPUT_RECORDS).getValue());
         } else {
             System.err.println("The job failed");
         }

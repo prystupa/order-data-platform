@@ -38,7 +38,7 @@ public class OrderEventGeneratorMapper extends Mapper<LongWritable, Text, Text, 
                 done = events >= eventCount;
             }
 
-            context.getCounter("ORDERS", "CHAINS").increment(1);
+            context.getCounter(EventCounter.CHAINS).increment(1);
         }
     }
 

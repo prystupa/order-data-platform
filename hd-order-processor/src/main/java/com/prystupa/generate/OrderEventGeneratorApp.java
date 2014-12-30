@@ -1,14 +1,13 @@
 package com.prystupa.generate;
 
-import com.prystupa.generate.mapreduce.OrderEventByOmsPartitioner;
-import com.prystupa.generate.mapreduce.OrderEventGeneratorMapper;
-import com.prystupa.generate.mapreduce.OrderEventWritable;
-import com.prystupa.generate.mapreduce.SimulatorParametersInputFormat;
+import com.prystupa.generate.mapreduce.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.TaskCounter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
@@ -51,8 +50,16 @@ public class OrderEventGeneratorApp extends Configured implements Tool {
 
         Configuration configuration = job.getConfiguration();
         boolean succeeded = job.waitForCompletion(configuration.getBoolean("verbose", false));
-        if (succeeded) logger.info("Completed the job");
-        else logger.error("The job failed");
+        logger.info("Completed the job");
+
+        if (succeeded) {
+            Counters counters = job.getCounters();
+            System.out.printf("%-12s%,12d\n", "systems", counters.findCounter(TaskCounter.REDUCE_INPUT_GROUPS).getValue());
+            System.out.printf("%-12s%,12d\n", "events", counters.findCounter(TaskCounter.REDUCE_OUTPUT_RECORDS).getValue());
+            System.out.printf("%-12s%,12d\n", "chains", counters.findCounter(EventCounter.CHAINS).getValue());
+        } else {
+            System.err.println("The job failed");
+        }
 
         return succeeded ? 0 : 1;
     }
