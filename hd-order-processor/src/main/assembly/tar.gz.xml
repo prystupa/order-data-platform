@@ -15,6 +15,10 @@
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}/dependency</directory>
+            <outputDirectory>${project.name}/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/bash</directory>
             <outputDirectory>${project.name}</outputDirectory>
         </fileSet>
     </fileSets>
