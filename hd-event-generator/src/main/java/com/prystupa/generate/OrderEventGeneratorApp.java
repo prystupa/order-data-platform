@@ -4,7 +4,9 @@ import com.prystupa.generate.mapreduce.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskCounter;
@@ -37,15 +39,23 @@ public class OrderEventGeneratorApp extends Configured implements Tool {
         logger.info("Starting the job");
         Job job = Job.getInstance(getConf());
         job.setJarByClass(getClass());
+
         job.setInputFormatClass(SimulatorParametersInputFormat.class);
         job.setMapperClass(OrderEventGeneratorMapper.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(OrderEventWritable.class);
+
         job.setPartitionerClass(OrderEventByOmsPartitioner.class);
         job.setNumReduceTasks(OMS_TOTAL);
+
         job.setOutputFormatClass(SequenceFileOutputFormat.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(OrderEventWritable.class);
+
+        FileOutputFormat.setCompressOutput(job, true);
+        FileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);
+        SequenceFileOutputFormat.setOutputCompressionType(job, SequenceFile.CompressionType.BLOCK);
+
         FileOutputFormat.setOutputPath(job, new Path(args[0]));
 
         Configuration configuration = job.getConfiguration();
