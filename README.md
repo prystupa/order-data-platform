@@ -17,6 +17,8 @@ The idea is to be able to scale inifinitly by processing events on a large distr
 
 Hazelcast is used in this POC as in-memory distributed grid provider.
 
+Hadoop is used to generate simulated data.
+
 Currently implemented ideas are documeted below.
 
 ## Data model
