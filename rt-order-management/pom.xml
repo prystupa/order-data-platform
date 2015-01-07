@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>com.prystupa</groupId>
-        <artifactId>rt-order-reporting</artifactId>
+        <artifactId>order-data-platform</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 

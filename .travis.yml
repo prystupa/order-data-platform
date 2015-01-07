@@ -13,6 +13,6 @@ deploy:
     - hd-event-generator/target/hd-event-generator-1.0-SNAPSHOT-bin.tar.gz
   skip_cleanup: true
   on:
-    repo: prystupa/rt-order-reporting
+    repo: prystupa/order-data-platform
     tags: true
     all_branches: true

@@ -65,6 +65,7 @@ public class EventChainLinkingTest {
         Event root = new Event("1", "1", "P1");
         Event child = new Event("2", "1", "P1");
         save(root);
+        waitChains(1).get(10, TimeUnit.SECONDS);
 
         // Act
         save(child);
