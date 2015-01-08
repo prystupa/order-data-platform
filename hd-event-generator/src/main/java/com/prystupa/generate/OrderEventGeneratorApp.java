@@ -1,12 +1,12 @@
 package com.prystupa.generate;
 
 import com.prystupa.generate.mapreduce.*;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.compress.GzipCodec;
+import org.apache.hadoop.io.compress.SnappyCodec;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskCounter;
@@ -16,6 +16,8 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public class OrderEventGeneratorApp extends Configured implements Tool {
 
@@ -36,8 +38,16 @@ public class OrderEventGeneratorApp extends Configured implements Tool {
             return -1;
         }
 
+        String output = args[0];
+
         logger.info("Starting the job");
         Job job = Job.getInstance(getConf());
+
+        boolean cleanup = getConf().getBoolean("cleanup", false);
+        if (cleanup) {
+            FileUtil.fullyDelete(new File(output));
+        }
+
         job.setJarByClass(getClass());
 
         job.setInputFormatClass(SimulatorParametersInputFormat.class);
@@ -52,14 +62,16 @@ public class OrderEventGeneratorApp extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(OrderEventWritable.class);
 
-        FileOutputFormat.setCompressOutput(job, true);
-        FileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);
+        boolean compress = getConf().getBoolean("compress-output", true);
+        if (compress) {
+            FileOutputFormat.setCompressOutput(job, true);
+            FileOutputFormat.setOutputCompressorClass(job, SnappyCodec.class);
+        }
         SequenceFileOutputFormat.setOutputCompressionType(job, SequenceFile.CompressionType.BLOCK);
 
-        FileOutputFormat.setOutputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(output));
 
-        Configuration configuration = job.getConfiguration();
-        boolean succeeded = job.waitForCompletion(configuration.getBoolean("verbose", false));
+        boolean succeeded = job.waitForCompletion(getConf().getBoolean("verbose", false));
         logger.info("Completed the job");
 
         if (succeeded) {
