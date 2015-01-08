@@ -15,6 +15,10 @@ public class OrderEventWritable implements Writable {
     private final Text primeId = new Text();
     private final LongWritable timestamp = new LongWritable();
 
+    public Text getId() {
+        return id;
+    }
+
     public OrderEventWritable() {
     }
 

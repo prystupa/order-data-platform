@@ -1,13 +1,13 @@
 package com.prystupa.generate;
 
 import com.prystupa.generate.mapreduce.OrderEventCaptureMapper;
+import com.prystupa.generate.mapreduce.SequenceFileAsOmsEventsInputFormat;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskCounter;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsBinaryInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
@@ -32,7 +32,7 @@ public class OrderEventCaptureApp extends Configured implements Tool {
 
         String input = args[0];
         FileInputFormat.addInputPath(job, new Path(input));
-        job.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
+        job.setInputFormatClass(SequenceFileAsOmsEventsInputFormat.class);
         job.setMapperClass(OrderEventCaptureMapper.class);
 
         job.setOutputFormatClass(NullOutputFormat.class);
